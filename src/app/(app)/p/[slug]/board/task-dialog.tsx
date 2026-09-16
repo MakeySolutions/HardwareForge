@@ -26,17 +26,17 @@ export function NewTaskButton({
     <Modal
       open={open}
       onOpenChange={setOpen}
-      title="Nová úloha"
+      title="New Task"
       trigger={
         compact ? (
           <button className="focus-ring mt-2 flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-hover)] hover:text-[var(--text)]">
             <Plus className="size-3.5" />
-            Pridať
+            Add
           </button>
         ) : (
           <Button variant="primary" size="sm">
             <Plus className="size-4" />
-            Nová úloha
+            New Task
           </Button>
         )
       }
@@ -47,19 +47,19 @@ export function NewTaskButton({
             await createTask(projectId, fd);
             setOpen(false);
           } catch {
-            toast.error("Úlohu sa nepodarilo vytvoriť");
+            toast.error("Failed to create task");
           }
         }}
         className="space-y-4"
       >
-        <Field label="Názov">
-          <Input name="title" required autoFocus placeholder="Zapojiť displej" />
+        <Field label="Name">
+          <Input name="title" required autoFocus placeholder="Wire up the display" />
         </Field>
-        <Field label="Popis">
+        <Field label="Description">
           <Textarea name="description" rows={3} />
         </Field>
         <div className="grid gap-3 sm:grid-cols-3">
-          <Field label="Stĺpec">
+          <Field label="Column">
             <NativeSelect name="status" defaultValue={status}>
               {Object.entries(TASK_STATUS).map(([v, m]) => (
                 <option key={v} value={v}>
@@ -68,7 +68,7 @@ export function NewTaskButton({
               ))}
             </NativeSelect>
           </Field>
-          <Field label="Priorita">
+          <Field label="Priority">
             <NativeSelect name="priority" defaultValue="MEDIUM">
               {Object.entries(PRIORITY).map(([v, m]) => (
                 <option key={v} value={v}>
@@ -77,15 +77,15 @@ export function NewTaskButton({
               ))}
             </NativeSelect>
           </Field>
-          <Field label="Termín">
+          <Field label="Due Date">
             <Input name="dueDate" type="date" />
           </Field>
         </div>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-            Zrušiť
+            Cancel
           </Button>
-          <SubmitButton>Pridať úlohu</SubmitButton>
+          <SubmitButton>Add Task</SubmitButton>
         </div>
       </form>
     </Modal>
@@ -100,11 +100,11 @@ export function EditTaskButton({ task }: { task: BoardTask }) {
     <Modal
       open={open}
       onOpenChange={setOpen}
-      title="Upraviť úlohu"
+      title="Edit Task"
       trigger={
         <button
           className="focus-ring rounded p-1 text-[var(--text-muted)] opacity-0 transition-opacity group-hover/card:opacity-100 focus-visible:opacity-100 hover:text-[var(--text)]"
-          aria-label={`Upraviť úlohu ${task.title}`}
+          aria-label={`Edit task ${task.title}`}
         >
           <Pencil className="size-3.5" />
         </button>
@@ -116,19 +116,19 @@ export function EditTaskButton({ task }: { task: BoardTask }) {
             await updateTask(task.id, fd);
             setOpen(false);
           } catch {
-            toast.error("Uloženie zlyhalo");
+            toast.error("Save failed");
           }
         }}
         className="space-y-4"
       >
-        <Field label="Názov">
+        <Field label="Name">
           <Input name="title" required defaultValue={task.title} />
         </Field>
-        <Field label="Popis">
+        <Field label="Description">
           <Textarea name="description" rows={4} defaultValue={task.description ?? ""} />
         </Field>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Priorita">
+          <Field label="Priority">
             <NativeSelect name="priority" defaultValue={task.priority}>
               {Object.entries(PRIORITY).map(([v, m]) => (
                 <option key={v} value={v}>
@@ -137,7 +137,7 @@ export function EditTaskButton({ task }: { task: BoardTask }) {
               ))}
             </NativeSelect>
           </Field>
-          <Field label="Termín">
+          <Field label="Due Date">
             <Input
               name="dueDate"
               type="date"
@@ -157,19 +157,19 @@ export function EditTaskButton({ task }: { task: BoardTask }) {
                   await deleteTask(task.id);
                   setOpen(false);
                 } catch {
-                  toast.error("Mazanie zlyhalo");
+                  toast.error("Delete failed");
                 }
               })
             }
           >
             <Trash2 className="size-3.5" />
-            Zmazať
+            Delete
           </Button>
           <div className="flex gap-2">
             <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-              Zrušiť
+              Cancel
             </Button>
-            <SubmitButton>Uložiť</SubmitButton>
+            <SubmitButton>Save</SubmitButton>
           </div>
         </div>
       </form>

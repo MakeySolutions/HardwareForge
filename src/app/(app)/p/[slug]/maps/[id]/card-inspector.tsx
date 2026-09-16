@@ -43,7 +43,7 @@ export function CardInspector({
         await fn();
         onChanged();
       } catch {
-        toast.error("Zmena zlyhala");
+        toast.error("Change failed");
       }
     });
 
@@ -56,14 +56,14 @@ export function CardInspector({
             <Link
               href={`/p/${slug}/board`}
               className="shrink-0 text-[var(--text-muted)] hover:text-[var(--text)]"
-              aria-label="Otvoriť v Doske"
+              aria-label="Open in Board"
             >
               <ExternalLink className="size-3.5" />
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <label className="text-[11px] text-[var(--text-muted)]">
-              Stav
+              Status
               <NativeSelect
                 className="mt-1 h-8 text-xs"
                 value={task.status}
@@ -78,7 +78,7 @@ export function CardInspector({
               </NativeSelect>
             </label>
             <label className="text-[11px] text-[var(--text-muted)]">
-              Priorita
+              Priority
               <NativeSelect
                 className="mt-1 h-8 text-xs"
                 value={task.priority}
@@ -110,7 +110,7 @@ export function CardInspector({
             <Link
               href={`/p/${slug}/parts`}
               className="shrink-0 text-[var(--text-muted)] hover:text-[var(--text)]"
-              aria-label="Otvoriť v Súčiastkach"
+              aria-label="Open in Parts"
             >
               <ExternalLink className="size-3.5" />
             </Link>
@@ -123,14 +123,14 @@ export function CardInspector({
               onChange={() => run(() => toggleLinkedPart(part.id))}
               className="focus-ring size-4 accent-[var(--accent)]"
             />
-            Už kúpené
+            Already bought
           </label>
         </>
       )}
 
       {!task && !part && (
         <p className="text-xs text-[var(--text-muted)]">
-          Prepojená položka bola zmazaná v projekte.
+          The linked item was deleted from the project.
         </p>
       )}
     </div>

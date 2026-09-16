@@ -13,7 +13,7 @@ export const WhiteboardEditor = dynamic(
     ssr: false,
     loading: () => (
       <div className="fixed inset-0 z-40 grid place-items-center bg-[var(--bg)] text-sm text-[var(--text-muted)]">
-        Načítavam mapu…
+        Loading map…
       </div>
     ),
   },

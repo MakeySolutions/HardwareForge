@@ -8,7 +8,7 @@ import { Badge, EmptyState, Progress } from "@/components/ui";
 import { FilterBar } from "./filter-bar";
 import { NewProjectButton } from "./new-project";
 
-export const metadata = { title: "Projekty — HardwareForge" };
+export const metadata = { title: "Projects — HardwareForge" };
 
 export default async function DashboardPage({
   searchParams,
@@ -37,12 +37,12 @@ export default async function DashboardPage({
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">
-            {archived ? "Archív" : "Projekty"}
+            {archived ? "Archive" : "Projects"}
           </h1>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
             {projects.length === 0
-              ? "Žiadne projekty"
-              : `${projects.length} ${projects.length === 1 ? "projekt" : projects.length < 5 ? "projekty" : "projektov"}`}
+              ? "No projects"
+              : `${projects.length} ${projects.length === 1 ? "project" : "projects"}`}
           </p>
         </div>
         <NewProjectButton categories={categories.map((c) => c.name)} />
@@ -53,11 +53,11 @@ export default async function DashboardPage({
       {projects.length === 0 ? (
         <EmptyState
           icon={<CircuitBoard className="size-10" />}
-          title={hasFilters ? "Nič sa nenašlo" : "Zatiaľ žiadne projekty"}
+          title={hasFilters ? "Nothing found" : "No projects yet"}
           description={
             hasFilters
-              ? "Skús zmeniť vyhľadávanie alebo filtre."
-              : "Vytvor prvý projekt a maj súčiastky, úlohy, súbory aj poznámky na jednom mieste."
+              ? "Try changing your search or filters."
+              : "Create your first project and keep parts, tasks, files, and notes all in one place."
           }
           action={hasFilters ? undefined : <NewProjectButton categories={[]} />}
         />
@@ -86,7 +86,7 @@ export default async function DashboardPage({
                 <div className="flex flex-1 flex-col p-4">
                   <h2 className="leading-tight font-semibold tracking-tight">{p.title}</h2>
                   <p className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm text-[var(--text-muted)]">
-                    {p.description || "Bez popisu"}
+                    {p.description || "No description"}
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -101,17 +101,17 @@ export default async function DashboardPage({
 
                   <div className="tabular mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--text-muted)]">
                     <span>
-                      {p.doneTasks}/{p.totalTasks} úloh
+                      {p.doneTasks}/{p.totalTasks} tasks
                     </span>
                     <span>{formatEur(cost)}</span>
-                    <span>{p.counts.parts} dielov</span>
-                    {p.counts.files > 0 && <span>{p.counts.files} súborov</span>}
+                    <span>{p.counts.parts} parts</span>
+                    {p.counts.files > 0 && <span>{p.counts.files} files</span>}
                   </div>
 
                   <div className="mt-auto pt-3">
                     {p.totalTasks > 0 && <Progress value={progress} />}
                     <p className="mt-2 text-[11px] text-[var(--text-muted)]">
-                      Upravené {timeAgo(p.updatedAt)}
+                      Updated {timeAgo(p.updatedAt)}
                     </p>
                   </div>
                 </div>

@@ -38,8 +38,8 @@ function fail(status: number, message: string) {
 }
 
 export async function POST(request: Request) {
-  if (!(await isAuthorized())) return fail(403, "Prístup zamietnutý");
-  if (!request.body) return fail(400, "Chýba obsah súboru");
+  if (!(await isAuthorized())) return fail(403, "Access denied");
+  if (!request.body) return fail(400, "Missing file content");
 
   const params = new URL(request.url).searchParams;
   try {
@@ -51,13 +51,13 @@ export async function POST(request: Request) {
       case "map-thumb":
         return await uploadMapThumbnail(params, request.body);
       default:
-        return fail(400, "Neznámy cieľ nahrávania");
+        return fail(400, "Unknown upload target");
     }
   } catch (err) {
     if (err instanceof TooLargeError) return fail(413, err.message);
-    if (err instanceof z.ZodError) return fail(400, "Neplatné parametre");
+    if (err instanceof z.ZodError) return fail(400, "Invalid parameters");
     console.error("upload:", err);
-    return fail(500, "Nahrávanie zlyhalo");
+    return fail(500, "Upload failed");
   }
 }
 
@@ -69,7 +69,7 @@ async function uploadProjectFile(params: URLSearchParams, body: ReadableStream<U
     where: { id: projectId },
     select: { slug: true },
   });
-  if (!project) return fail(404, "Projekt neexistuje");
+  if (!project) return fail(404, "Project does not exist");
 
   const key = newKey(["projects", projectId], safeExt(name));
   const size = await saveStream(key, body, MAX_UPLOAD_BYTES);
@@ -79,7 +79,7 @@ async function uploadProjectFile(params: URLSearchParams, body: ReadableStream<U
       const created = await tx.fileAsset.create({
         data: { projectId, name, storageKey: key, sizeBytes: size, kind: detectFileKind(name) },
       });
-      await logActivity(tx, projectId, "FILE_UPLOADED", `Nahraný súbor „${name}“`);
+      await logActivity(tx, projectId, "FILE_UPLOADED", `Uploaded file "${name}"`);
       return created;
     });
     revalidatePath(`/p/${project.slug}`, "layout");
@@ -96,10 +96,10 @@ async function uploadMapImage(params: URLSearchParams, body: ReadableStream<Uint
   const fileId = excalidrawFileId.parse(params.get("fileId"));
   const mimeType = z.string().parse(params.get("mime"));
   const ext = IMAGE_MIME_EXT[mimeType];
-  if (!ext) return fail(415, "Nepodporovaný typ obrázka");
+  if (!ext) return fail(415, "Unsupported image type");
 
   const board = await db.whiteboard.findUnique({ where: { id: whiteboardId }, select: { id: true } });
-  if (!board) return fail(404, "Mapa neexistuje");
+  if (!board) return fail(404, "Map does not exist");
 
   const key = newKey(["whiteboards", whiteboardId], ext);
   const size = await saveStream(key, body, MAX_IMAGE_BYTES);
@@ -128,7 +128,7 @@ async function uploadMapThumbnail(params: URLSearchParams, body: ReadableStream<
     where: { id: whiteboardId },
     select: { thumbnailKey: true, project: { select: { slug: true } } },
   });
-  if (!board) return fail(404, "Mapa neexistuje");
+  if (!board) return fail(404, "Map does not exist");
 
   const key = newKey(["whiteboards", whiteboardId], "webp");
   await saveStream(key, body, MAX_THUMB_BYTES);

@@ -107,7 +107,7 @@ export function KanbanBoard({
       try {
         await moveTask(task.id, toStatus, finalIndex);
       } catch {
-        toast.error("Presun sa nepodaril");
+        toast.error("Move failed");
       }
     });
   }
@@ -119,8 +119,8 @@ export function KanbanBoard({
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-[var(--text-muted)]">
           {optimistic.length === 0
-            ? "Zatiaľ žiadne úlohy"
-            : `${optimistic.filter((t) => t.status === "DONE").length}/${optimistic.length} hotových`}
+            ? "No tasks yet"
+            : `${optimistic.filter((t) => t.status === "DONE").length}/${optimistic.length} done`}
         </p>
         <NewTaskButton projectId={projectId} />
       </div>

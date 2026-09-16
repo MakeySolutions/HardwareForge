@@ -15,7 +15,7 @@ function csvCell(value: string): string {
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   // Route Handler nie je chraneny layoutom - autorizacia musi byt tu
   if (!(await isAuthorized())) {
-    return new Response("Prístup zamietnutý", { status: 403 });
+    return new Response("Access denied", { status: 403 });
   }
 
   const { id } = await params;
@@ -23,7 +23,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     where: { id },
     select: { slug: true, title: true },
   });
-  if (!project) return new Response("Projekt nenájdený", { status: 404 });
+  if (!project) return new Response("Project not found", { status: 404 });
 
   const parts = await db.part.findMany({
     where: { projectId: id, acquired: false },
@@ -31,7 +31,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   });
 
   const rows: string[][] = [
-    ["Obchod", "Názov", "Označenie", "Počet ks", "Cena za ks", "Spolu", "Odkaz", "Poznámky"],
+    ["Shop", "Name", "Part Number", "Qty", "Unit Price", "Total", "Link", "Notes"],
   ];
 
   let total = 0;
@@ -53,16 +53,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       ]);
     }
   }
-  rows.push(["", "", "", "", "SPOLU", total.toFixed(2), "", ""]);
+  rows.push(["", "", "", "", "TOTAL", total.toFixed(2), "", ""]);
 
-  // Oddelovac je bodkociarka, nie ciarka - slovenske Excel locale ocakava ";".
   // BOM na zaciatku, inak Excel zobrazi diakritiku rozbito.
-  const csv = "﻿" + rows.map((r) => r.map(csvCell).join(";")).join("\r\n");
+  const csv = "﻿" + rows.map((r) => r.map(csvCell).join(",")).join("\r\n");
 
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="nakupny-zoznam-${project.slug}.csv"`,
+      "Content-Disposition": `attachment; filename="shopping-list-${project.slug}.csv"`,
     },
   });
 }

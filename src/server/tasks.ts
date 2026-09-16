@@ -41,7 +41,7 @@ export async function createTask(projectId: string, formData: FormData) {
         completedAt: status === "DONE" ? new Date() : null,
       },
     });
-    await logActivity(tx, projectId, "TASK_CREATED", `Pridaná úloha „${title}“`);
+    await logActivity(tx, projectId, "TASK_CREATED", `Added task "${title}"`);
   });
 
   revalidatePath(`/p/${await slugOf(projectId)}`, "layout");
@@ -61,7 +61,7 @@ export async function updateTask(taskId: string, formData: FormData) {
       where: { id: taskId },
       data: { title, description, priority, dueDate: dueRaw ? new Date(dueRaw) : null },
     });
-    await logActivity(tx, task.projectId, "TASK_CREATED", `Upravená úloha „${title}“`);
+    await logActivity(tx, task.projectId, "TASK_CREATED", `Updated task "${title}"`);
   });
 
   revalidatePath(`/p/${await slugOf(task.projectId)}`, "layout");
@@ -104,7 +104,7 @@ export async function moveTask(taskId: string, toStatus: string, toIndex: number
         tx,
         task.projectId,
         status === "DONE" ? "TASK_COMPLETED" : "TASK_MOVED",
-        `Úloha „${task.title}“ presunutá do ${TASK_STATUS[status].label}`,
+        `Task "${task.title}" moved to ${TASK_STATUS[status].label}`,
       );
     }
 
@@ -129,7 +129,7 @@ export async function deleteTask(taskId: string) {
 
   await db.$transaction(async (tx) => {
     await tx.task.delete({ where: { id: taskId } });
-    await logActivity(tx, task.projectId, "TASK_DELETED", `Zmazaná úloha „${task.title}“`);
+    await logActivity(tx, task.projectId, "TASK_DELETED", `Deleted task "${task.title}"`);
   });
 
   revalidatePath(`/p/${await slugOf(task.projectId)}`, "layout");

@@ -42,22 +42,22 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
           <p className="mt-2 text-[var(--text-muted)]">{data.description}</p>
         )}
         <dl className="tabular mt-4 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm sm:grid-cols-4">
-          <Item label="Stav" value={PROJECT_STATUS[data.status].label} />
-          <Item label="Priorita" value={PRIORITY[data.priority].label} />
-          <Item label="Kategória" value={data.category} />
-          <Item label="Vytvorené" value={formatDate(data.createdAt)} />
-          {data.dueDate && <Item label="Termín" value={formatDate(data.dueDate)} />}
-          <Item label="Úlohy" value={`${done}/${data.tasks.length} hotových`} />
-          <Item label="Cena" value={formatEur(cost)} />
+          <Item label="Status" value={PROJECT_STATUS[data.status].label} />
+          <Item label="Priority" value={PRIORITY[data.priority].label} />
+          <Item label="Category" value={data.category} />
+          <Item label="Created" value={formatDate(data.createdAt)} />
+          {data.dueDate && <Item label="Due Date" value={formatDate(data.dueDate)} />}
+          <Item label="Tasks" value={`${done}/${data.tasks.length} done`} />
+          <Item label="Cost" value={formatEur(cost)} />
           {power.countedParts > 0 && (
-            <Item label="Spotreba" value={`≈ ${power.totalWatts.toFixed(1)} W`} />
+            <Item label="Power Draw" value={`≈ ${power.totalWatts.toFixed(1)} W`} />
           )}
         </dl>
       </header>
 
       {data.tasks.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Úlohy</h2>
+          <h2 className="mb-3 text-lg font-semibold">Tasks</h2>
           <div className="space-y-4">
             {KANBAN_COLUMNS.map((status) => {
               const items = data.tasks.filter((t) => t.status === status);
@@ -86,15 +86,15 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
 
       {data.parts.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Súčiastky</h2>
+          <h2 className="mb-3 text-lg font-semibold">Parts</h2>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--border)] text-left text-xs text-[var(--text-muted)]">
-                <th className="py-2 font-medium">Názov</th>
-                <th className="py-2 font-medium">Kategória</th>
-                <th className="py-2 text-right font-medium">Ks</th>
-                <th className="py-2 text-right font-medium">Cena/ks</th>
-                <th className="py-2 text-right font-medium">Spolu</th>
+                <th className="py-2 font-medium">Name</th>
+                <th className="py-2 font-medium">Category</th>
+                <th className="py-2 text-right font-medium">Qty</th>
+                <th className="py-2 text-right font-medium">Unit Price</th>
+                <th className="py-2 text-right font-medium">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -122,7 +122,7 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
             <tfoot>
               <tr>
                 <td colSpan={4} className="py-2 text-right text-xs text-[var(--text-muted)]">
-                  Spolu
+                  Total
                 </td>
                 <td className="tabular py-2 text-right font-semibold">{formatEur(cost)}</td>
               </tr>
@@ -131,9 +131,9 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
 
           {power.recommended && (
             <p className="tabular mt-3 text-sm text-[var(--text-muted)]">
-              Odhad spotreby: ≈ {power.totalWatts.toFixed(1)} W · odporúčaný zdroj ≥{" "}
+              Estimated draw: ≈ {power.totalWatts.toFixed(1)} W · recommended supply ≥{" "}
               {power.recommended.voltage} V / {power.recommended.currentA.toFixed(1)} A
-              (vrátane 30 % rezervy)
+              (includes a 30% margin)
             </p>
           )}
         </section>
@@ -141,7 +141,7 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
 
       {data.links.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Odkazy</h2>
+          <h2 className="mb-3 text-lg font-semibold">Links</h2>
           <ul className="space-y-1.5 text-sm">
             {data.links.map((l) => (
               <li key={l.id}>
@@ -158,7 +158,7 @@ export function ProjectReport({ data, publicView }: { data: ReportData; publicVi
 
       {!publicView && data.notes.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Poznámky</h2>
+          <h2 className="mb-3 text-lg font-semibold">Notes</h2>
           <div className="space-y-6">
             {data.notes.map((n) => (
               <div key={n.id}>

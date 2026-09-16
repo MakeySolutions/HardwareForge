@@ -250,7 +250,7 @@ export function createWhiteboardEngine(cfg: EngineConfig) {
             height: img.height,
           });
         } catch (err) {
-          console.error("Obrázok sa nepodarilo pripraviť:", err);
+          console.error("Failed to prepare image:", err);
         }
       }
       if (skeletons.length === 0) return;

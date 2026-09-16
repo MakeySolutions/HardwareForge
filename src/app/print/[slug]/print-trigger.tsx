@@ -32,9 +32,9 @@ export function PrintTrigger({ name }: { name: string }) {
     if (!bridge) return window.print();
     setBusy(true);
     try {
-      if (await bridge.savePdf(name)) toast.success("PDF uložené");
+      if (await bridge.savePdf(name)) toast.success("PDF saved");
     } catch {
-      toast.error("PDF sa nepodarilo uložiť");
+      toast.error("Failed to save PDF");
     } finally {
       setBusy(false);
     }
@@ -44,17 +44,17 @@ export function PrintTrigger({ name }: { name: string }) {
     <div className="no-print sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg)] px-6 py-3">
       <Button variant="ghost" size="sm" onClick={() => router.back()}>
         <ArrowLeft className="size-3.5" />
-        Späť
+        Back
       </Button>
       <div className="flex items-center gap-3">
         {!isDesktop && (
           <p className="text-sm text-[var(--text-muted)]">
-            V tlačovom dialógu vyber <strong className="text-[var(--text)]">Uložiť ako PDF</strong>.
+            In the print dialog, choose <strong className="text-[var(--text)]">Save as PDF</strong>.
           </p>
         )}
         <Button variant="primary" size="sm" onClick={() => void savePdf()} disabled={busy}>
           {isDesktop ? <FileDown className="size-3.5" /> : <Printer className="size-3.5" />}
-          {isDesktop ? "Uložiť PDF" : "Tlačiť"}
+          {isDesktop ? "Save PDF" : "Print"}
         </Button>
       </div>
     </div>

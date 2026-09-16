@@ -55,7 +55,7 @@ describe("groupByShop", () => {
     ]);
     expect(groups.map((g) => [g.shop, g.items.length])).toEqual([
       ["aliexpress.com", 2],
-      ["Neurčený obchod", 2],
+      ["Unspecified shop", 2],
     ]);
   });
 });

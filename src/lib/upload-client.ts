@@ -13,7 +13,7 @@ export async function uploadToApp(
   });
   if (!res.ok) {
     const message = await res.text().catch(() => "");
-    throw new Error(message || `Nahrávanie zlyhalo (${res.status})`);
+    throw new Error(message || `Upload failed (${res.status})`);
   }
   return res.json();
 }

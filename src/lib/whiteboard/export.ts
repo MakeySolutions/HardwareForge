@@ -127,7 +127,7 @@ export async function renderThumbnail({
       },
     });
   } catch (err) {
-    console.error("Náhľad mapy sa nepodarilo vytvoriť:", err);
+    console.error("Failed to create map thumbnail:", err);
     return null;
   }
 }

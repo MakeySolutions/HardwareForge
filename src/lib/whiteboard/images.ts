@@ -68,7 +68,7 @@ async function resizeIfNeeded(file: File): Promise<{ blob: Blob; width: number; 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, outType, 0.85),
   );
-  if (!blob) throw new Error("Obrázok sa nepodarilo spracovať");
+  if (!blob) throw new Error("Failed to process image");
   return { blob, width, height };
 }
 

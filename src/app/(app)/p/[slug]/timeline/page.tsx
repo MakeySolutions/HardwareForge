@@ -27,35 +27,35 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
   return (
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="Vytvorené" value={<span className="text-lg">{formatDate(project.createdAt)}</span>} />
+        <Stat label="Created" value={<span className="text-lg">{formatDate(project.createdAt)}</span>} />
         <Stat
-          label="Posledná úprava"
+          label="Last update"
           value={<span className="text-lg">{timeAgo(project.updatedAt)}</span>}
           sub={formatDate(project.updatedAt)}
         />
         <Stat
-          label="Dokončené úlohy"
+          label="Completed tasks"
           value={`${completed.length}/${tasks.length}`}
           sub={
             completed.length
-              ? `Naposledy ${timeAgo(
+              ? `Last ${timeAgo(
                   completed.sort(
                     (a, b) => b.completedAt!.getTime() - a.completedAt!.getTime(),
                   )[0].completedAt!,
                 )}`
-              : "Zatiaľ žiadne"
+              : "None yet"
           }
         />
       </div>
 
       <Card>
-        <h2 className="mb-5 text-sm font-semibold">História zmien</h2>
+        <h2 className="mb-5 text-sm font-semibold">Change History</h2>
 
         {days.length === 0 ? (
           <EmptyState
             icon={<History className="size-9" />}
-            title="Zatiaľ žiadna história"
-            description="Každá zmena v projekte sa sem zapíše automaticky."
+            title="No history yet"
+            description="Every change in the project is recorded here automatically."
           />
         ) : (
           <div className="space-y-6">
@@ -73,7 +73,7 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                       />
                       <p className="text-sm leading-snug">{a.message}</p>
                       <p className="tabular mt-0.5 text-[11px] text-[var(--text-muted)]">
-                        {a.createdAt.toLocaleTimeString("sk-SK", {
+                        {a.createdAt.toLocaleTimeString("en-GB", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}

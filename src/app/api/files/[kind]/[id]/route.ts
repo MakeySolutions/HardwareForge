@@ -27,7 +27,7 @@ async function lookup(kind: string, id: string): Promise<{ key: string; name: st
     }
     case "map-thumb": {
       const w = await db.whiteboard.findUnique({ where: { id }, select: { thumbnailKey: true } });
-      return w?.thumbnailKey ? { key: w.thumbnailKey, name: "nahlad" } : null;
+      return w?.thumbnailKey ? { key: w.thumbnailKey, name: "thumbnail" } : null;
     }
     case "part-image": {
       const p = await db.part.findUnique({ where: { id }, select: { imageKey: true, name: true } });
@@ -48,13 +48,13 @@ export async function GET(
   { params }: { params: Promise<{ kind: string; id: string }> },
 ) {
   if (!(await isAuthorized())) {
-    return new Response("Prístup zamietnutý", { status: 403 });
+    return new Response("Access denied", { status: 403 });
   }
 
   const { kind, id } = await params;
   const found = await lookup(kind, id);
   const file = found && (await openRead(found.key));
-  if (!found || !file) return new Response("Súbor nenájdený", { status: 404 });
+  if (!found || !file) return new Response("File not found", { status: 404 });
 
   const mime = mimeForKey(found.key);
   const inline = mime !== null && !new URL(request.url).searchParams.has("download");

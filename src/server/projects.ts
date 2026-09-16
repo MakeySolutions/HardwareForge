@@ -14,14 +14,14 @@ const statusEnum = z.enum(["IDEA", "PLANNING", "DEVELOPMENT", "TESTING", "DONE"]
 const priorityEnum = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
 
 const projectSchema = z.object({
-  title: z.string().trim().min(1, "Názov je povinný").max(120),
+  title: z.string().trim().min(1, "Name is required").max(120),
   description: z.string().trim().max(5000).optional().default(""),
-  category: z.string().trim().min(1).max(60).default("Elektronika"),
+  category: z.string().trim().min(1).max(60).default("Electronics"),
   status: statusEnum.default("IDEA"),
   priority: priorityEnum.default("MEDIUM"),
   color: z
     .string()
-    .regex(/^#[0-9a-fA-F]{6}$/, "Neplatná farba")
+    .regex(/^#[0-9a-fA-F]{6}$/, "Invalid color")
     .default("#7c8cff"),
   dueDate: z.string().optional(),
 });
@@ -46,7 +46,7 @@ export async function createProject(formData: FormData) {
   const parsed = projectSchema.parse({
     title: formData.get("title"),
     description: formData.get("description") ?? "",
-    category: formData.get("category") || "Elektronika",
+    category: formData.get("category") || "Electronics",
     status: formData.get("status") || "IDEA",
     priority: formData.get("priority") || "MEDIUM",
     color: formData.get("color") || "#7c8cff",
@@ -68,7 +68,7 @@ export async function createProject(formData: FormData) {
         dueDate: parsed.dueDate ? new Date(parsed.dueDate) : null,
       },
     });
-    await logActivity(tx, p.id, "PROJECT_CREATED", `Vytvorený projekt „${p.title}“`);
+    await logActivity(tx, p.id, "PROJECT_CREATED", `Created project "${p.title}"`);
     return p;
   });
 
@@ -82,7 +82,7 @@ export async function updateProject(projectId: string, formData: FormData) {
   const parsed = projectSchema.parse({
     title: formData.get("title"),
     description: formData.get("description") ?? "",
-    category: formData.get("category") || "Elektronika",
+    category: formData.get("category") || "Electronics",
     status: formData.get("status") || "IDEA",
     priority: formData.get("priority") || "MEDIUM",
     color: formData.get("color") || "#7c8cff",
@@ -113,10 +113,10 @@ export async function updateProject(projectId: string, formData: FormData) {
         tx,
         projectId,
         "STATUS_CHANGED",
-        `Stav zmenený na ${PROJECT_STATUS[parsed.status].label}`,
+        `Status changed to ${PROJECT_STATUS[parsed.status].label}`,
       );
     } else {
-      await logActivity(tx, projectId, "PROJECT_UPDATED", "Upravené údaje projektu");
+      await logActivity(tx, projectId, "PROJECT_UPDATED", "Updated project details");
     }
   });
 
@@ -142,7 +142,7 @@ export async function setProjectStatus(projectId: string, status: string) {
       tx,
       projectId,
       "STATUS_CHANGED",
-      `Stav zmenený na ${PROJECT_STATUS[value].label}`,
+      `Status changed to ${PROJECT_STATUS[value].label}`,
     );
   });
 

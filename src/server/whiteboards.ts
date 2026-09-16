@@ -35,8 +35,8 @@ export async function createWhiteboard(projectId: string, formData: FormData) {
     .trim()
     .min(1)
     .max(120)
-    .catch("Nová mapa")
-    .parse(formData.get("title") || "Nová mapa");
+    .catch("New Map")
+    .parse(formData.get("title") || "New Map");
   const template = (formData.get("template")?.toString() || "blank").slice(0, 40);
 
   const last = await db.whiteboard.findFirst({
@@ -49,7 +49,7 @@ export async function createWhiteboard(projectId: string, formData: FormData) {
     const created = await tx.whiteboard.create({
       data: { projectId, title, order: last ? last.order + 1024 : 1024 },
     });
-    await logActivity(tx, projectId, "WHITEBOARD_CREATED", `Vytvorená mapa „${title}“`);
+    await logActivity(tx, projectId, "WHITEBOARD_CREATED", `Created map "${title}"`);
     return created;
   });
 
@@ -59,7 +59,7 @@ export async function createWhiteboard(projectId: string, formData: FormData) {
 
 export async function renameWhiteboard(whiteboardId: string, title: string) {
   await requireAuth();
-  const safe = title.trim().slice(0, 120) || "Nová mapa";
+  const safe = title.trim().slice(0, 120) || "New Map";
   const { slug } = await boardContext(whiteboardId);
   await db.whiteboard.update({ where: { id: whiteboardId }, data: { title: safe } });
   revalidatePath(`/p/${slug}/maps`);
@@ -79,7 +79,7 @@ export async function deleteWhiteboard(whiteboardId: string) {
 
   await db.$transaction(async (tx) => {
     await tx.whiteboard.delete({ where: { id: whiteboardId } });
-    await logActivity(tx, wb.project.id, "WHITEBOARD_DELETED", `Zmazaná mapa „${wb.title}“`);
+    await logActivity(tx, wb.project.id, "WHITEBOARD_DELETED", `Deleted map "${wb.title}"`);
   });
   // Obrazky + nahlad az po DB - best effort, zlyhanie neblokuje mazanie mapy.
   await removeKeys([...wb.files.map((f) => f.storageKey), wb.thumbnailKey]);
@@ -93,10 +93,10 @@ export async function deleteWhiteboard(whiteboardId: string) {
 export async function saveWhiteboard(whiteboardId: string, elements: unknown, appState: unknown) {
   await requireAuth();
 
-  if (!Array.isArray(elements)) throw new Error("Neplatná scéna");
+  if (!Array.isArray(elements)) throw new Error("Invalid scene");
   const serialized = JSON.stringify(elements);
   if (serialized.length > MAX_SCENE_BYTES) {
-    throw new Error("Mapa je príliš veľká na uloženie");
+    throw new Error("Map is too large to save");
   }
 
   // Zamerne bez revalidatePath - editor drzi vlastny stav a autosave bezi casto.

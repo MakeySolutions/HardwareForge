@@ -16,8 +16,8 @@ const PART_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 async function saveImage(formData: FormData): Promise<string | null> {
   const file = formData.get("image");
   if (!(file instanceof File) || file.size === 0) return null;
-  if (file.size > MAX_PART_IMAGE) throw new Error("Obrázok je väčší ako 5 MB");
-  if (!PART_IMAGE_TYPES.includes(file.type)) throw new Error("Nepodporovaný typ obrázka");
+  if (file.size > MAX_PART_IMAGE) throw new Error("Image is larger than 5 MB");
+  if (!PART_IMAGE_TYPES.includes(file.type)) throw new Error("Unsupported image type");
 
   const key = newKey(["parts"], IMAGE_MIME_EXT[file.type]);
   await saveBuffer(key, new Uint8Array(await file.arrayBuffer()));
@@ -57,7 +57,7 @@ function optionalUrl(value: FormDataEntryValue | null): string | null {
 
 function readForm(formData: FormData) {
   return {
-    name: z.string().trim().min(1, "Názov je povinný").max(160).parse(formData.get("name")),
+    name: z.string().trim().min(1, "Name is required").max(160).parse(formData.get("name")),
     category: categoryEnum.parse(formData.get("category") || "OTHER"),
     quantity: Math.max(
       1,
@@ -81,7 +81,7 @@ export async function createPart(projectId: string, formData: FormData) {
   try {
     await db.$transaction(async (tx) => {
       await tx.part.create({ data: { projectId, ...data, imageKey } });
-      await logActivity(tx, projectId, "PART_ADDED", `Pridaná súčiastka „${data.name}“`);
+      await logActivity(tx, projectId, "PART_ADDED", `Added part "${data.name}"`);
     });
   } catch (err) {
     await removeKeys([imageKey]);
@@ -103,7 +103,7 @@ export async function updatePart(partId: string, formData: FormData) {
   try {
     await db.$transaction(async (tx) => {
       await tx.part.update({ where: { id: partId }, data: { ...data, imageKey } });
-      await logActivity(tx, part.projectId, "PART_UPDATED", `Upravená súčiastka „${data.name}“`);
+      await logActivity(tx, part.projectId, "PART_UPDATED", `Updated part "${data.name}"`);
     });
   } catch (err) {
     await removeKeys([newImage]);
@@ -128,7 +128,7 @@ export async function deletePart(partId: string) {
 
   await db.$transaction(async (tx) => {
     await tx.part.delete({ where: { id: partId } });
-    await logActivity(tx, part.projectId, "PART_REMOVED", `Odstránená súčiastka „${part.name}“`);
+    await logActivity(tx, part.projectId, "PART_REMOVED", `Removed part "${part.name}"`);
   });
   await removeKeys([part.imageKey]);
 

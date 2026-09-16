@@ -27,17 +27,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
         <nav className="space-y-1">
           <SidebarLink href="/dashboard" icon={<LayoutGrid className="size-4" />}>
-            Projekty
+            Projects
           </SidebarLink>
           <SidebarLink href="/dashboard?archived=1" icon={<Archive className="size-4" />}>
-            Archív
+            Archive
           </SidebarLink>
         </nav>
 
         {categories.length > 0 && (
           <div className="mt-6">
             <p className="px-3 pb-2 text-[11px] font-medium tracking-wide text-[var(--text-muted)] uppercase">
-              Kategórie
+              Categories
             </p>
             <div className="space-y-0.5">
               {categories.map((c) => (

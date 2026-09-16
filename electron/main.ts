@@ -136,8 +136,8 @@ async function startServer(): Promise<void> {
     server = null;
     if (!quitting && mainWindow) {
       dialog.showErrorBox(
-        "HardwareForge sa neočakávane zastavil",
-        `Tvoje dáta sú v bezpečí. Spusti appku znova.\n\n${lastLogLines()}`,
+        "HardwareForge stopped unexpectedly",
+        `Your data is safe. Restart the app.\n\n${lastLogLines()}`,
       );
       app.exit(1);
     }
@@ -145,7 +145,7 @@ async function startServer(): Promise<void> {
 
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
-    if (exitCode !== null) throw new Error(`Server skončil (kód ${exitCode}).`);
+    if (exitCode !== null) throw new Error(`Server exited (code ${exitCode}).`);
     try {
       const res = await fetch(`${origin}/api/health`, {
         headers: { cookie: `${TOKEN_COOKIE}=${token}` },
@@ -156,7 +156,7 @@ async function startServer(): Promise<void> {
     }
     await new Promise((r) => setTimeout(r, 200));
   }
-  throw new Error("Server sa nespustil do 60 sekúnd.");
+  throw new Error("Server did not start within 60 seconds.");
 }
 
 function stopServer(): Promise<void> {
@@ -195,11 +195,11 @@ function verifyDatabase(file: string) {
   const db = openDatabase(file);
   try {
     const check = db.prepare("PRAGMA integrity_check").all() as Record<string, unknown>[];
-    if (Object.values(check[0] ?? {})[0] !== "ok") throw new Error("Databáza v zálohe je poškodená");
+    if (Object.values(check[0] ?? {})[0] !== "ok") throw new Error("The database in the backup is corrupted");
     const table = db
       .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = '_hf_migrations'")
       .all();
-    if (table.length === 0) throw new Error("Súbor nie je databáza HardwareForge");
+    if (table.length === 0) throw new Error("This file is not a HardwareForge database");
   } finally {
     db.close();
   }
@@ -211,9 +211,9 @@ async function backupData() {
   const win = mainWindow ?? undefined;
   const stamp = new Date().toISOString().slice(0, 10);
   const { canceled, filePath } = await dialog.showSaveDialog(win!, {
-    title: "Uložiť zálohu",
-    defaultPath: path.join(documentsDir(), `HardwareForge-zaloha-${stamp}.zip`),
-    filters: [{ name: "Záloha HardwareForge", extensions: ["zip"] }],
+    title: "Save Backup",
+    defaultPath: path.join(documentsDir(), `HardwareForge-backup-${stamp}.zip`),
+    filters: [{ name: "HardwareForge Backup", extensions: ["zip"] }],
   });
   if (canceled || !filePath) return;
 
@@ -226,11 +226,11 @@ async function backupData() {
     });
     await dialog.showMessageBox(win!, {
       type: "info",
-      message: "Záloha je hotová",
-      detail: `Uložená do:\n${filePath}\n\nOdlož si ju mimo počítača (USB, cloud).`,
+      message: "Backup complete",
+      detail: `Saved to:\n${filePath}\n\nKeep a copy somewhere else too (a USB stick, a cloud drive).`,
     });
   } catch (err) {
-    dialog.showErrorBox("Zálohovanie zlyhalo", err instanceof Error ? err.message : String(err));
+    dialog.showErrorBox("Backup failed", err instanceof Error ? err.message : String(err));
   }
 }
 
@@ -238,28 +238,28 @@ async function restoreData() {
   const win = mainWindow ?? undefined;
   const { response } = await dialog.showMessageBox(win!, {
     type: "warning",
-    buttons: ["Vybrať zálohu…", "Zrušiť"],
+    buttons: ["Choose Backup…", "Cancel"],
     defaultId: 1,
     cancelId: 1,
-    message: "Obnoviť dáta zo zálohy?",
+    message: "Restore data from a backup?",
     detail:
-      "Aktuálne projekty a súbory sa nahradia obsahom zálohy. Nič sa nezmaže — súčasné dáta sa presunú do priečinka „data-pred-obnovou-…“.",
+      "Your current projects and files will be replaced with the backup's contents. Nothing is deleted — your current data is moved into a “data-before-restore-…” folder.",
   });
   if (response !== 0) return;
 
   const { canceled, filePaths } = await dialog.showOpenDialog(win!, {
-    title: "Vybrať zálohu",
+    title: "Choose Backup",
     properties: ["openFile"],
-    filters: [{ name: "Záloha HardwareForge", extensions: ["zip"] }],
+    filters: [{ name: "HardwareForge Backup", extensions: ["zip"] }],
   });
   if (canceled || !filePaths[0]) return;
 
-  const staging = path.join(userData, `data-obnova-${Date.now()}`);
+  const staging = path.join(userData, `data-restore-${Date.now()}`);
   try {
     await prepareRestore(filePaths[0], staging, verifyDatabase);
   } catch (err) {
     fs.rmSync(staging, { recursive: true, force: true });
-    dialog.showErrorBox("Zálohu nemožno obnoviť", err instanceof Error ? err.message : String(err));
+    dialog.showErrorBox("Backup could not be restored", err instanceof Error ? err.message : String(err));
     return;
   }
 
@@ -269,8 +269,8 @@ async function restoreData() {
     swapInRestoredData(dataDir, staging);
   } catch (err) {
     dialog.showErrorBox(
-      "Obnova zlyhala",
-      `${err instanceof Error ? err.message : String(err)}\n\nPôvodné dáta zostali nezmenené.`,
+      "Restore failed",
+      `${err instanceof Error ? err.message : String(err)}\n\nYour original data was left unchanged.`,
     );
   }
   app.relaunch();
@@ -285,11 +285,11 @@ function showAbout() {
   void dialog
     .showMessageBox(mainWindow!, {
       type: "info",
-      title: `O aplikácii ${APP_NAME}`,
+      title: `About ${APP_NAME}`,
       message: `${APP_NAME} ${app.getVersion()}`,
       detail:
-        "Plánovanie hardvérových projektov. Všetky dáta sú uložené len na tomto počítači — appka sa nepripája na internet.\n\nLicencia MIT.",
-      buttons: ["Zavrieť", "Zdrojový kód na GitHube"],
+        "Hardware project planning. All data is stored only on this computer — the app never connects to the internet.\n\nLicense: MIT.",
+      buttons: ["Close", "Source Code on GitHub"],
       cancelId: 0,
     })
     .then(({ response }) => {
@@ -318,7 +318,7 @@ function safeFileName(name: unknown, ext: string): string {
 async function savePdfBuffer(e: IpcMainInvokeEvent, name: unknown, pdf: () => Promise<Buffer>) {
   const win = BrowserWindow.fromWebContents(e.sender) ?? undefined;
   const { canceled, filePath } = await dialog.showSaveDialog(win!, {
-    title: "Uložiť PDF",
+    title: "Save PDF",
     defaultPath: path.join(documentsDir(), safeFileName(name, "pdf")),
     filters: [{ name: "PDF", extensions: ["pdf"] }],
   });
@@ -375,43 +375,43 @@ function registerIpc() {
 function buildMenu() {
   const template: MenuItemConstructorOptions[] = [
     {
-      label: "Súbor",
+      label: "File",
       submenu: [
-        { label: "Zálohovať dáta…", accelerator: "CmdOrCtrl+Shift+S", click: () => void backupData() },
-        { label: "Obnoviť zo zálohy…", click: () => void restoreData() },
-        { label: "Otvoriť priečinok s dátami", click: () => void openDataFolder() },
+        { label: "Back Up Data…", accelerator: "CmdOrCtrl+Shift+S", click: () => void backupData() },
+        { label: "Restore from Backup…", click: () => void restoreData() },
+        { label: "Open Data Folder", click: () => void openDataFolder() },
         { type: "separator" },
-        { label: "Koniec", role: "quit" },
+        { label: "Quit", role: "quit" },
       ],
     },
     {
-      label: "Upraviť",
+      label: "Edit",
       submenu: [
-        { label: "Späť", role: "undo" },
-        { label: "Znova", role: "redo" },
+        { label: "Undo", role: "undo" },
+        { label: "Redo", role: "redo" },
         { type: "separator" },
-        { label: "Vystrihnúť", role: "cut" },
-        { label: "Kopírovať", role: "copy" },
-        { label: "Prilepiť", role: "paste" },
-        { label: "Označiť všetko", role: "selectAll" },
+        { label: "Cut", role: "cut" },
+        { label: "Copy", role: "copy" },
+        { label: "Paste", role: "paste" },
+        { label: "Select All", role: "selectAll" },
       ],
     },
     {
-      label: "Zobraziť",
+      label: "View",
       submenu: [
-        { label: "Obnoviť", role: "reload" },
+        { label: "Reload", role: "reload" },
         { type: "separator" },
-        { label: "Zväčšiť", role: "zoomIn" },
-        { label: "Zmenšiť", role: "zoomOut" },
-        { label: "Pôvodná veľkosť", role: "resetZoom" },
+        { label: "Zoom In", role: "zoomIn" },
+        { label: "Zoom Out", role: "zoomOut" },
+        { label: "Actual Size", role: "resetZoom" },
         { type: "separator" },
-        { label: "Celá obrazovka", role: "togglefullscreen" },
+        { label: "Toggle Full Screen", role: "togglefullscreen" },
         ...(isDev ? [{ role: "toggleDevTools" } as MenuItemConstructorOptions] : []),
       ],
     },
     {
-      label: "Pomoc",
-      submenu: [{ label: `O aplikácii ${APP_NAME}`, click: showAbout }],
+      label: "Help",
+      submenu: [{ label: `About ${APP_NAME}`, click: showAbout }],
     },
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -453,11 +453,11 @@ async function createWindow() {
   mainWindow.webContents.on("will-prevent-unload", (event) => {
     const choice = dialog.showMessageBoxSync(mainWindow!, {
       type: "question",
-      buttons: ["Zavrieť", "Zostať"],
+      buttons: ["Close", "Stay"],
       defaultId: 1,
       cancelId: 1,
-      message: "Mapa má neuložené zmeny",
-      detail: "Ukladá sa automaticky o chvíľu. Ak zavrieš teraz, posledné úpravy sa môžu stratiť.",
+      message: "This map has unsaved changes",
+      detail: "It auto-saves in a moment. If you close now, the latest changes may be lost.",
     });
     // preventDefault tu znamena "ignorovat beforeunload a zavriet"
     if (choice === 0) event.preventDefault();
@@ -487,7 +487,7 @@ if (!app.requestSingleInstanceLock()) {
       hardenSession(
         session.defaultSession,
         () => origin,
-        (url) => console.warn(`[blokované] ${url}`),
+        (url) => console.warn(`[blocked] ${url}`),
         isDev,
       );
       registerIpc();
@@ -498,8 +498,8 @@ if (!app.requestSingleInstanceLock()) {
       quitting = true;
       await stopServer();
       dialog.showErrorBox(
-        `${APP_NAME} sa nepodarilo spustiť`,
-        `${err instanceof Error ? err.message : String(err)}\n\n${lastLogLines()}\n\nZáznam: ${serverLogPath()}`,
+        `${APP_NAME} failed to start`,
+        `${err instanceof Error ? err.message : String(err)}\n\n${lastLogLines()}\n\nLog file: ${serverLogPath()}`,
       );
       app.exit(1);
     }

@@ -23,37 +23,37 @@ export default async function OverviewPage({ params }: { params: Promise<{ slug:
         <div className="grid gap-4 sm:grid-cols-2">
           <Card className="p-4">
             <p className="text-[11px] font-medium tracking-wide text-[var(--text-muted)] uppercase">
-              Pokrok
+              Progress
             </p>
             <p className="tabular mt-1.5 text-2xl leading-none font-semibold">
               {stats.doneTasks}/{stats.totalTasks}
             </p>
-            <p className="mt-1.5 text-xs text-[var(--text-muted)]">dokončených úloh</p>
+            <p className="mt-1.5 text-xs text-[var(--text-muted)]">tasks done</p>
             <Progress value={progress} className="mt-3" />
           </Card>
 
           <Stat
-            label="Cena projektu"
+            label="Project cost"
             value={formatEur(cost)}
             sub={
               toBuy > 0
-                ? `Ešte kúpiť: ${formatEur(toBuy)} · ${stats.counts.parts} dielov`
-                : `${stats.counts.parts} dielov, všetko kúpené`
+                ? `Still to buy: ${formatEur(toBuy)} · ${stats.counts.parts} parts`
+                : `${stats.counts.parts} parts, all bought`
             }
           />
 
           <Stat
-            label="Odhad spotreby"
+            label="Estimated draw"
             value={power.countedParts ? `≈ ${power.totalWatts.toFixed(1)} W` : "—"}
             sub={
               power.recommended
-                ? `Zdroj ≥ ${power.recommended.voltage} V / ${power.recommended.currentA.toFixed(1)} A`
-                : "Doplň V a mA pri súčiastkach"
+                ? `Supply ≥ ${power.recommended.voltage} V / ${power.recommended.currentA.toFixed(1)} A`
+                : "Add V and mA to your parts"
             }
           />
 
           <Stat
-            label="Najbližší termín"
+            label="Next due date"
             value={
               stats.nextDue?.dueDate ? (
                 <span className="text-lg">{formatDate(stats.nextDue.dueDate)}</span>
@@ -61,13 +61,13 @@ export default async function OverviewPage({ params }: { params: Promise<{ slug:
                 "—"
               )
             }
-            sub={stats.nextDue?.title ?? "Žiadna úloha s termínom"}
+            sub={stats.nextDue?.title ?? "No task with a due date"}
           />
         </div>
 
         {power.rails.length > 1 && (
           <Card>
-            <h2 className="mb-3 text-sm font-semibold">Rozpočet energie po vetvách</h2>
+            <h2 className="mb-3 text-sm font-semibold">Power Budget by Rail</h2>
             <div className="space-y-2">
               {power.rails.map((r) => (
                 <div key={r.voltage} className="flex items-center gap-3">
@@ -87,23 +87,23 @@ export default async function OverviewPage({ params }: { params: Promise<{ slug:
               ))}
             </div>
             <p className="mt-3 text-xs text-[var(--text-muted)]">
-              Odhad predpokladá súčasnú prevádzku všetkých súčiastok. Odporúčaný zdroj má 30 %
-              rezervu na špičky (napr. Wi-Fi vysielanie na ESP32).
+              The estimate assumes all parts running at once. The recommended supply has a 30%
+              margin for spikes (e.g. Wi-Fi transmit on an ESP32).
             </p>
           </Card>
         )}
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <QuickLink href={`/p/${slug}/parts`} count={stats.counts.parts} label="súčiastok" />
-          <QuickLink href={`/p/${slug}/files`} count={stats.counts.files} label="súborov" />
-          <QuickLink href={`/p/${slug}/links`} count={stats.counts.links} label="odkazov" />
+          <QuickLink href={`/p/${slug}/parts`} count={stats.counts.parts} label="parts" />
+          <QuickLink href={`/p/${slug}/files`} count={stats.counts.files} label="files" />
+          <QuickLink href={`/p/${slug}/links`} count={stats.counts.links} label="links" />
         </div>
       </div>
 
       <Card className="h-fit">
-        <h2 className="mb-4 text-sm font-semibold">Nedávna aktivita</h2>
+        <h2 className="mb-4 text-sm font-semibold">Recent Activity</h2>
         {activity.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">Zatiaľ žiadna aktivita.</p>
+          <p className="text-sm text-[var(--text-muted)]">No activity yet.</p>
         ) : (
           <ol className="space-y-3">
             {activity.map((a) => (
@@ -123,7 +123,7 @@ export default async function OverviewPage({ params }: { params: Promise<{ slug:
           href={`/p/${slug}/timeline`}
           className="mt-4 inline-block text-xs text-[var(--accent)] hover:underline"
         >
-          Celá časová os →
+          Full timeline →
         </Link>
       </Card>
     </div>

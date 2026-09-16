@@ -34,7 +34,7 @@ export default async function ProjectLayout({
         className="no-print mb-4 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text)]"
       >
         <ArrowLeft className="size-3.5" />
-        Projekty
+        Projects
       </Link>
 
       <div className="card relative overflow-hidden p-5 md:p-6">
@@ -62,12 +62,12 @@ export default async function ProjectLayout({
               </Badge>
               {project.dueDate && (
                 <Badge className="border-[var(--border)] text-[var(--text-muted)]">
-                  Termín: {formatDate(project.dueDate)}
+                  Due: {formatDate(project.dueDate)}
                 </Badge>
               )}
               {project.archivedAt && (
                 <Badge className="border-amber-500/30 bg-amber-500/10 text-amber-300">
-                  Archivované
+                  Archived
                 </Badge>
               )}
             </div>

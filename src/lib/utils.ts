@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** "Spotify Displej s ESP32!" -> "spotify-displej-s-esp32" */
+/** "Spotify Display with ESP32!" -> "spotify-display-with-esp32" */
 export function slugify(input: string): string {
   return (
     input
@@ -27,28 +27,28 @@ export function formatBytes(bytes: number): string {
 /** Ceny prichadzaju z Prisma Decimal serializovane na string. */
 export function formatEur(value: number | string | null | undefined): string {
   const n = typeof value === "string" ? Number(value) : (value ?? 0);
-  return new Intl.NumberFormat("sk-SK", {
+  return new Intl.NumberFormat("en-IE", {
     style: "currency",
     currency: "EUR",
   }).format(Number.isFinite(n) ? n : 0);
 }
 
-const RELATIVE = new Intl.RelativeTimeFormat("sk", { numeric: "auto" });
+const RELATIVE = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
 export function timeAgo(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   const diffSec = Math.round((d.getTime() - Date.now()) / 1000);
   const abs = Math.abs(diffSec);
 
-  if (abs < 60) return "pred chvilou";
+  if (abs < 60) return "just now";
   if (abs < 3600) return RELATIVE.format(Math.round(diffSec / 60), "minute");
   if (abs < 86_400) return RELATIVE.format(Math.round(diffSec / 3600), "hour");
   if (abs < 2_592_000) return RELATIVE.format(Math.round(diffSec / 86_400), "day");
-  return d.toLocaleDateString("sk-SK");
+  return d.toLocaleDateString("en-GB");
 }
 
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("sk-SK", { day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 }

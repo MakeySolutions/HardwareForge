@@ -27,7 +27,7 @@ export async function createLink(projectId: string, formData: FormData) {
   const url = z
     .string()
     .trim()
-    .url("Zadaj platnú URL vrátane https://")
+    .url("Enter a valid URL including https://")
     .parse(formData.get("url"));
   const title = formData.get("title")?.toString().trim() || new URL(url).hostname;
   const typeRaw = formData.get("type")?.toString();
@@ -37,7 +37,7 @@ export async function createLink(projectId: string, formData: FormData) {
 
   await db.$transaction(async (tx) => {
     await tx.link.create({ data: { projectId, url, title, type, notes } });
-    await logActivity(tx, projectId, "LINK_ADDED", `Pridaný odkaz „${title}“`);
+    await logActivity(tx, projectId, "LINK_ADDED", `Added link "${title}"`);
   });
 
   revalidatePath(`/p/${await slugOf(projectId)}`, "layout");
@@ -55,7 +55,7 @@ export async function deleteLink(linkId: string) {
 export async function createNote(projectId: string) {
   await requireAuth();
   const note = await db.note.create({
-    data: { projectId, title: "Nová poznámka", content: "" },
+    data: { projectId, title: "New note", content: "" },
   });
   revalidatePath(`/p/${await slugOf(projectId)}`, "layout");
   return note.id;
@@ -65,13 +65,13 @@ export async function saveNote(noteId: string, title: string, content: string) {
   await requireAuth();
   const note = await db.note.findUniqueOrThrow({ where: { id: noteId } });
 
-  const safeTitle = title.trim().slice(0, 160) || "Bez názvu";
+  const safeTitle = title.trim().slice(0, 160) || "Untitled";
   await db.$transaction(async (tx) => {
     await tx.note.update({
       where: { id: noteId },
       data: { title: safeTitle, content: content.slice(0, 100_000) },
     });
-    await logActivity(tx, note.projectId, "NOTE_UPDATED", `Upravená poznámka „${safeTitle}“`);
+    await logActivity(tx, note.projectId, "NOTE_UPDATED", `Updated note "${safeTitle}"`);
   });
 
   revalidatePath(`/p/${await slugOf(note.projectId)}`, "layout");
@@ -101,7 +101,7 @@ export async function deleteFile(fileId: string) {
 
   await db.$transaction(async (tx) => {
     await tx.fileAsset.delete({ where: { id: fileId } });
-    await logActivity(tx, file.projectId, "FILE_DELETED", `Zmazaný súbor „${file.name}“`);
+    await logActivity(tx, file.projectId, "FILE_DELETED", `Deleted file "${file.name}"`);
   });
   // Az po DB: ked zlyha mazanie z disku, UI aj tak nema mrtvy zaznam
   // a subor neskor odstrani upratovanie osirelych suborov.

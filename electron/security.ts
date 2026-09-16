@@ -78,7 +78,7 @@ export function hardenSession(
   // Stiahnutie (subor, CSV, export mapy) -> dialog "Ulozit ako"
   ses.on("will-download", (_event, item) => {
     item.setSaveDialogOptions({
-      title: "Uložiť súbor",
+      title: "Save File",
       defaultPath: path.join(app.getPath("downloads"), item.getFilename()),
     });
   });

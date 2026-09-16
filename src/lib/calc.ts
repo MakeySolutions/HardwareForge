@@ -91,7 +91,7 @@ export function powerBudget(parts: PartCalcInput[]): PowerBudget {
 export function groupByShop<T extends { shopUrl: string | null }>(parts: T[]) {
   const byShop = new Map<string, T[]>();
   for (const p of parts) {
-    let shop = "Neurčený obchod";
+    let shop = "Unspecified shop";
     if (p.shopUrl) {
       try {
         shop = new URL(p.shopUrl).hostname.replace(/^www\./, "");

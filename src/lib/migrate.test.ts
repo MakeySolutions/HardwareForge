@@ -84,7 +84,7 @@ describe("runMigrations", () => {
     expect(result.applied).toEqual(["99999999999999_extra"]);
     const backups = fs.readdirSync(path.join(tmp, "backups"));
     expect(backups).toHaveLength(1);
-    expect(backups[0]).toMatch(/^pred-aktualizaciou-.*\.db$/);
+    expect(backups[0]).toMatch(/^before-update-.*\.db$/);
     // zaloha obsahuje data spred migracie
     const backupFile = path.join(tmp, "backups", backups[0]);
     expect(query<{ title: string }>(backupFile, `SELECT title FROM "Project"`)).toEqual([{ title: "LED hodiny" }]);
@@ -116,7 +116,7 @@ describe("runMigrations", () => {
     runMigrations(file, REAL_MIGRATIONS);
     exec(file, `INSERT INTO "_hf_migrations" VALUES ('99999999999999_buducnost', 'x')`);
 
-    expect(() => runMigrations(file, REAL_MIGRATIONS)).toThrow(/novšej verzie/);
+    expect(() => runMigrations(file, REAL_MIGRATIONS)).toThrow(/newer version/);
   });
 
   it("nepodarená nová databáza po sebe nenechá súbor", () => {

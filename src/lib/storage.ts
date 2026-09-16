@@ -52,9 +52,9 @@ export function safeExt(filename: string): string {
 /** Novy nahodny kluc v danom priecinku, napr. newKey(["projects", id], "stl"). */
 export function newKey(folder: string[], ext: string): string {
   if (folder.length === 0 || !folder.every((s) => SEGMENT.test(s))) {
-    throw new Error("Neplatný priečinok úložiska");
+    throw new Error("Invalid storage folder");
   }
-  if (!EXT.test(ext)) throw new Error("Neplatná prípona");
+  if (!EXT.test(ext)) throw new Error("Invalid file extension");
   return `${folder.join("/")}/${randomUUID()}.${ext}`;
 }
 
@@ -65,7 +65,7 @@ export function newKey(folder: string[], ext: string): string {
 export function resolveKey(key: string, root = storageRoot()): string {
   const base = path.resolve(root);
   const full = path.resolve(base, key);
-  if (!full.startsWith(base + path.sep)) throw new Error("Neplatný kľúč súboru");
+  if (!full.startsWith(base + path.sep)) throw new Error("Invalid file key");
   return full;
 }
 
@@ -91,7 +91,7 @@ export async function saveStream(
   const limiter = new Transform({
     transform(chunk: Buffer, _enc, cb) {
       size += chunk.length;
-      if (size > maxBytes) cb(new TooLargeError("Súbor je väčší ako povolený limit"));
+      if (size > maxBytes) cb(new TooLargeError("File is larger than the allowed limit"));
       else cb(null, chunk);
     },
   });
@@ -151,7 +151,7 @@ export async function removeKeys(keys: (string | null | undefined)[]): Promise<v
         try {
           await fsp.rm(resolveKey(key), { force: true });
         } catch (err) {
-          console.error("Súbor sa nepodarilo zmazať:", key, err);
+          console.error("Failed to delete file:", key, err);
         }
       }),
   );

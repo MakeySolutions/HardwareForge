@@ -36,43 +36,43 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat
-          label="Celková cena"
+          label="Total cost"
           value={formatEur(cost)}
-          sub={`${parts.length} položiek · ${acquired} kúpených`}
+          sub={`${parts.length} items · ${acquired} bought`}
         />
         <Stat
-          label="Ešte kúpiť"
+          label="Still to buy"
           value={formatEur(toBuy)}
-          sub={toBuy === 0 ? "Všetko je kúpené" : `${parts.length - acquired} položiek chýba`}
+          sub={toBuy === 0 ? "Everything is bought" : `${parts.length - acquired} items missing`}
         />
         <Stat
-          label="Odhad spotreby"
+          label="Estimated draw"
           value={power.countedParts ? `≈ ${power.totalWatts.toFixed(1)} W` : "—"}
           sub={
             power.recommended
-              ? `Zdroj ≥ ${power.recommended.voltage} V / ${power.recommended.currentA.toFixed(1)} A`
-              : "Doplň V a mA pri súčiastkach"
+              ? `Supply ≥ ${power.recommended.voltage} V / ${power.recommended.currentA.toFixed(1)} A`
+              : "Add V and mA to your parts"
           }
         />
       </div>
 
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Súčiastky</h2>
+        <h2 className="text-sm font-semibold">Parts</h2>
         <Button variant="primary" size="sm" onClick={() => setCreating(true)}>
           <Plus className="size-4" />
-          Pridať súčiastku
+          Add Part
         </Button>
       </div>
 
       {parts.length === 0 ? (
         <EmptyState
           icon={<Cpu className="size-9" />}
-          title="Zatiaľ žiadne súčiastky"
-          description="Pridaj ESP32, displeje, LED pásy či napájanie. Cena a spotreba sa spočítajú samy."
+          title="No parts yet"
+          description="Add ESP32s, displays, LED strips, or power supplies. Cost and power draw are calculated automatically."
           action={
             <Button variant="primary" onClick={() => setCreating(true)}>
               <Plus className="size-4" />
-              Pridať súčiastku
+              Add Part
             </Button>
           }
         />
@@ -82,12 +82,12 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
             <thead>
               <tr className="border-b border-[var(--border)] text-left text-xs text-[var(--text-muted)]">
                 <th className="w-10 px-3 py-2.5" />
-                <th className="px-3 py-2.5 font-medium">Názov</th>
-                <th className="px-3 py-2.5 font-medium">Kategória</th>
-                <th className="px-3 py-2.5 text-right font-medium">Ks</th>
-                <th className="px-3 py-2.5 text-right font-medium">Cena/ks</th>
-                <th className="px-3 py-2.5 text-right font-medium">Spolu</th>
-                <th className="px-3 py-2.5 text-right font-medium">Spotreba</th>
+                <th className="px-3 py-2.5 font-medium">Name</th>
+                <th className="px-3 py-2.5 font-medium">Category</th>
+                <th className="px-3 py-2.5 text-right font-medium">Qty</th>
+                <th className="px-3 py-2.5 text-right font-medium">Unit Price</th>
+                <th className="px-3 py-2.5 text-right font-medium">Total</th>
+                <th className="px-3 py-2.5 text-right font-medium">Draw</th>
                 <th className="w-24 px-3 py-2.5" />
               </tr>
             </thead>
@@ -106,15 +106,15 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
                       <input
                         type="checkbox"
                         checked={p.acquired}
-                        title={p.acquired ? "Označiť ako nekúpené" : "Označiť ako kúpené"}
-                        aria-label={`${p.name} — kúpené`}
+                        title={p.acquired ? "Mark as not bought" : "Mark as bought"}
+                        aria-label={`${p.name} — bought`}
                         className="focus-ring size-4 cursor-pointer accent-[var(--accent)]"
                         onChange={() =>
                           startTransition(async () => {
                             try {
                               await togglePartAcquired(p.id);
                             } catch {
-                              toast.error("Zmena zlyhala");
+                              toast.error("Change failed");
                             }
                           })
                         }
@@ -169,7 +169,7 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
                             target="_blank"
                             rel="noopener noreferrer"
                             className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-[var(--text)]"
-                            aria-label={`Otvoriť obchod pre ${p.name}`}
+                            aria-label={`Open shop for ${p.name}`}
                           >
                             <ExternalLink className="size-3.5" />
                           </a>
@@ -177,7 +177,7 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
                         <button
                           onClick={() => setEditing(p)}
                           className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-[var(--text)]"
-                          aria-label={`Upraviť ${p.name}`}
+                          aria-label={`Edit ${p.name}`}
                         >
                           <Pencil className="size-3.5" />
                         </button>
@@ -190,7 +190,7 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
             <tfoot>
               <tr className="border-t border-[var(--border-strong)] bg-[var(--bg-subtle)]">
                 <td colSpan={5} className="px-3 py-2.5 text-xs text-[var(--text-muted)]">
-                  Spolu
+                  Total
                 </td>
                 <td className="tabular px-3 py-2.5 text-right font-semibold">
                   {formatEur(cost)}
@@ -204,7 +204,7 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
 
       {power.rails.length > 0 && (
         <Card>
-          <h2 className="mb-3 text-sm font-semibold">Rozpočet energie</h2>
+          <h2 className="mb-3 text-sm font-semibold">Power Budget</h2>
           <div className="space-y-2">
             {power.rails.map((r) => (
               <div key={r.voltage} className="flex items-center gap-3">
@@ -224,8 +224,8 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
             ))}
           </div>
           <p className="mt-3 text-xs text-[var(--text-muted)]">
-            Prúdy sa sčítavajú po napäťových vetvách — 500 mA pri 5 V a 500 mA pri 3,3 V nie je
-            1 A na jednej vetve. Odhad predpokladá súčasnú prevádzku všetkých súčiastok.
+            Currents add up per voltage rail — 500 mA at 5 V and 500 mA at 3.3 V is not
+            1 A on one rail. The estimate assumes all parts running at once.
           </p>
         </Card>
       )}
@@ -234,14 +234,14 @@ export function PartsTable({ projectId, parts }: { projectId: string; parts: Par
       <PartForm
         open={creating}
         onOpenChange={setCreating}
-        title="Nová súčiastka"
+        title="New Part"
         onSubmit={async (fd) => createPart(projectId, fd)}
       />
       {editing && (
         <PartForm
           open
           onOpenChange={(v) => !v && setEditing(null)}
-          title="Upraviť súčiastku"
+          title="Edit Part"
           part={editing}
           onSubmit={async (fd) => updatePart(editing.id, fd)}
           onDelete={async () => deletePart(editing.id)}
@@ -276,7 +276,7 @@ function PartForm({
             await onSubmit(fd);
             onOpenChange(false);
           } catch (err) {
-            toast.error("Uloženie zlyhalo — skontroluj vyplnené polia", {
+            toast.error("Save failed — check the filled-in fields", {
               description: err instanceof Error ? err.message : undefined,
             });
           }
@@ -284,11 +284,11 @@ function PartForm({
         className="space-y-4"
       >
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Názov" className="sm:col-span-2">
+          <Field label="Name" className="sm:col-span-2">
             <Input name="name" required autoFocus defaultValue={part?.name} placeholder="ESP32-WROOM-32" />
           </Field>
 
-          <Field label="Kategória">
+          <Field label="Category">
             <NativeSelect name="category" defaultValue={part?.category ?? "OTHER"}>
               {Object.entries(PART_CATEGORY).map(([v, label]) => (
                 <option key={v} value={v}>
@@ -298,11 +298,11 @@ function PartForm({
             </NativeSelect>
           </Field>
 
-          <Field label="Počet kusov">
+          <Field label="Quantity">
             <Input name="quantity" type="number" min={1} defaultValue={part?.quantity ?? 1} />
           </Field>
 
-          <Field label="Cena za kus (€)">
+          <Field label="Unit Price (€)">
             <Input
               name="unitPrice"
               inputMode="decimal"
@@ -311,15 +311,15 @@ function PartForm({
             />
           </Field>
 
-          <Field label="Označenie / part number">
+          <Field label="Part Number">
             <Input name="partNumber" defaultValue={part?.partNumber ?? ""} placeholder="ILI9341" />
           </Field>
 
-          <Field label="Napätie (V)" hint="Pre odhad spotreby">
+          <Field label="Voltage (V)" hint="For power draw estimate">
             <Input name="voltage" inputMode="decimal" defaultValue={part?.voltage ?? ""} placeholder="5" />
           </Field>
 
-          <Field label="Prúd (mA)" hint="Typický odber jedného kusu">
+          <Field label="Current (mA)" hint="Typical draw of a single unit">
             <Input
               name="currentMa"
               inputMode="decimal"
@@ -328,7 +328,7 @@ function PartForm({
             />
           </Field>
 
-          <Field label="Odkaz na obchod" className="sm:col-span-2">
+          <Field label="Shop Link" className="sm:col-span-2">
             <Input
               name="shopUrl"
               type="url"
@@ -338,9 +338,9 @@ function PartForm({
           </Field>
 
           <Field
-            label="Obrázok"
+            label="Image"
             className="sm:col-span-2"
-            hint="PNG, JPG, WEBP alebo GIF do 5 MB — uloží sa len na tvoj počítač"
+            hint="PNG, JPG, WEBP, or GIF up to 5 MB — saved only on your computer"
           >
             <input
               name="image"
@@ -351,12 +351,12 @@ function PartForm({
             {part?.imageUrl && (
               <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-[var(--text-muted)]">
                 <input type="checkbox" name="removeImage" className="size-3.5 accent-[var(--accent)]" />
-                Odstrániť súčasný obrázok
+                Remove current image
               </label>
             )}
           </Field>
 
-          <Field label="Poznámky" className="sm:col-span-2">
+          <Field label="Notes" className="sm:col-span-2">
             <Textarea name="notes" rows={2} defaultValue={part?.notes ?? ""} />
           </Field>
         </div>
@@ -368,7 +368,7 @@ function PartForm({
             defaultChecked={part?.acquired}
             className="focus-ring size-4 accent-[var(--accent)]"
           />
-          Už kúpené (nebude v nákupnom zozname)
+          Already bought (won&apos;t be in the shopping list)
         </label>
 
         <div className="flex justify-between gap-2 pt-1">
@@ -382,22 +382,22 @@ function PartForm({
                     await onDelete();
                     onOpenChange(false);
                   } catch {
-                    toast.error("Mazanie zlyhalo");
+                    toast.error("Delete failed");
                   }
                 })
               }
             >
               <Trash2 className="size-3.5" />
-              Zmazať
+              Delete
             </Button>
           ) : (
             <span />
           )}
           <div className="flex gap-2">
             <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
-              Zrušiť
+              Cancel
             </Button>
-            <SubmitButton>Uložiť</SubmitButton>
+            <SubmitButton>Save</SubmitButton>
           </div>
         </div>
       </form>

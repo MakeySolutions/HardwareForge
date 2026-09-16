@@ -9,7 +9,7 @@ import { Button } from "./ui";
  */
 export function SubmitButton({
   children,
-  pendingLabel = "Ukladám…",
+  pendingLabel = "Saving…",
   variant = "primary",
   className,
 }: {

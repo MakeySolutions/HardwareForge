@@ -38,8 +38,8 @@ function partCardText(part: LinkPart): string {
   const price =
     part.unitPrice != null
       ? formatEur(Number(part.unitPrice) * part.quantity)
-      : "bez ceny";
-  const buy = part.acquired ? "kúpené" : "kúpiť";
+      : "no price";
+  const buy = part.acquired ? "bought" : "to buy";
   return `${part.name}\n${part.quantity}× · ${price} · ${buy}`;
 }
 
@@ -116,8 +116,8 @@ export function syncLinkedCards(
       background = DELETED.background;
       text =
         cd.hf === "task"
-          ? "úloha zmazaná"
-          : "súčiastka zmazaná";
+          ? "task deleted"
+          : "part deleted";
     } else if (cd.hf === "task") {
       const t = entity as LinkTask;
       const c = statusColors(TASK_STATUS[t.status].dot);

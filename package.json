@@ -1,8 +1,8 @@
 {
   "name": "hardwareforge",
   "productName": "HardwareForge",
-  "version": "0.1.1",
-  "description": "Plánovanie hardvérových projektov (ESP32, Arduino, 3D tlač) — všetko lokálne na tvojom počítači.",
+  "version": "0.1.2",
+  "description": "Hardware project planning (ESP32, Arduino, 3D printing) — everything stays local on your computer.",
   "private": true,
   "license": "MIT",
   "author": "HardwareForge",

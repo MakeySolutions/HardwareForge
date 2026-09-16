@@ -10,18 +10,18 @@ import type {
 type Meta = { label: string; color: string; dot: string };
 
 export const PROJECT_STATUS: Record<ProjectStatus, Meta> = {
-  IDEA: { label: "Nápad", color: "text-slate-300 bg-slate-500/15 border-slate-500/30", dot: "#94a3b8" },
-  PLANNING: { label: "Plánovanie", color: "text-sky-300 bg-sky-500/15 border-sky-500/30", dot: "#38bdf8" },
-  DEVELOPMENT: { label: "Vývoj", color: "text-indigo-300 bg-indigo-500/15 border-indigo-500/30", dot: "#818cf8" },
-  TESTING: { label: "Testovanie", color: "text-amber-300 bg-amber-500/15 border-amber-500/30", dot: "#fbbf24" },
-  DONE: { label: "Dokončené", color: "text-emerald-300 bg-emerald-500/15 border-emerald-500/30", dot: "#34d399" },
+  IDEA: { label: "Idea", color: "text-slate-300 bg-slate-500/15 border-slate-500/30", dot: "#94a3b8" },
+  PLANNING: { label: "Planning", color: "text-sky-300 bg-sky-500/15 border-sky-500/30", dot: "#38bdf8" },
+  DEVELOPMENT: { label: "Development", color: "text-indigo-300 bg-indigo-500/15 border-indigo-500/30", dot: "#818cf8" },
+  TESTING: { label: "Testing", color: "text-amber-300 bg-amber-500/15 border-amber-500/30", dot: "#fbbf24" },
+  DONE: { label: "Done", color: "text-emerald-300 bg-emerald-500/15 border-emerald-500/30", dot: "#34d399" },
 };
 
 export const PRIORITY: Record<Priority, Meta> = {
-  LOW: { label: "Nízka", color: "text-slate-300 bg-slate-500/15 border-slate-500/30", dot: "#94a3b8" },
-  MEDIUM: { label: "Stredná", color: "text-sky-300 bg-sky-500/15 border-sky-500/30", dot: "#38bdf8" },
-  HIGH: { label: "Vysoká", color: "text-orange-300 bg-orange-500/15 border-orange-500/30", dot: "#fb923c" },
-  CRITICAL: { label: "Kritická", color: "text-red-300 bg-red-500/15 border-red-500/30", dot: "#f87171" },
+  LOW: { label: "Low", color: "text-slate-300 bg-slate-500/15 border-slate-500/30", dot: "#94a3b8" },
+  MEDIUM: { label: "Medium", color: "text-sky-300 bg-sky-500/15 border-sky-500/30", dot: "#38bdf8" },
+  HIGH: { label: "High", color: "text-orange-300 bg-orange-500/15 border-orange-500/30", dot: "#fb923c" },
+  CRITICAL: { label: "Critical", color: "text-red-300 bg-red-500/15 border-red-500/30", dot: "#f87171" },
 };
 
 export const TASK_STATUS: Record<TaskStatus, Meta> = {
@@ -42,25 +42,25 @@ export const KANBAN_COLUMNS: TaskStatus[] = [
 ];
 
 export const PART_CATEGORY: Record<PartCategory, string> = {
-  MCU: "Mikrokontrolér",
-  DISPLAY: "Displej",
-  LED: "LED / pásy",
+  MCU: "Microcontroller",
+  DISPLAY: "Display",
+  LED: "LED / strips",
   AUDIO: "Audio",
-  SENSOR: "Senzor",
-  POWER: "Napájanie",
-  MECHANICAL: "Mechanika / tlač",
-  CABLE: "Káble a konektory",
-  OTHER: "Iné",
+  SENSOR: "Sensor",
+  POWER: "Power",
+  MECHANICAL: "Mechanical / printing",
+  CABLE: "Cables & connectors",
+  OTHER: "Other",
 };
 
 export const LINK_TYPE: Record<LinkType, string> = {
   GITHUB: "GitHub",
   YOUTUBE: "YouTube",
   DATASHEET: "Datasheet",
-  SHOP: "Obchod",
-  DOCS: "Dokumentácia",
-  INSPIRATION: "Inšpirácia",
-  OTHER: "Iné",
+  SHOP: "Shop",
+  DOCS: "Documentation",
+  INSPIRATION: "Inspiration",
+  OTHER: "Other",
 };
 
 export const FILE_KIND: Record<FileKind, { label: string; color: string }> = {
@@ -69,9 +69,9 @@ export const FILE_KIND: Record<FileKind, { label: string; color: string }> = {
   STEP: { label: "STEP", color: "#a78bfa" },
   CAD: { label: "CAD", color: "#c084fc" },
   SVG: { label: "SVG", color: "#fb923c" },
-  IMAGE: { label: "Obrázok", color: "#34d399" },
-  ARCHIVE: { label: "Archív", color: "#94a3b8" },
-  OTHER: { label: "Súbor", color: "#94a3b8" },
+  IMAGE: { label: "Image", color: "#34d399" },
+  ARCHIVE: { label: "Archive", color: "#94a3b8" },
+  OTHER: { label: "File", color: "#94a3b8" },
 };
 
 /** Prípona -> FileKind. Fusion 360 (.f3d) a STEP nemajú registrovaný MIME type. */
@@ -132,10 +132,10 @@ export function guessLinkType(url: string): LinkType {
 export const DEFAULT_CATEGORIES = [
   "ESP32",
   "Arduino",
-  "3D tlač",
-  "Elektronika",
+  "3D printing",
+  "Electronics",
   "LED",
   "Audio",
   "Smart home",
-  "Iné",
+  "Other",
 ];

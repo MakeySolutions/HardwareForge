@@ -75,7 +75,7 @@ export async function createBackup(o: {
   appVersion: string;
   snapshotDb: (target: string) => void;
 }): Promise<void> {
-  const tmpDb = path.join(o.dataDir, `.zaloha-${randomUUID()}.db`);
+  const tmpDb = path.join(o.dataDir, `.backup-${randomUUID()}.db`);
   const partial = `${o.target}.part`;
 
   try {
@@ -113,7 +113,7 @@ function openZip(file: string): Promise<yauzl.ZipFile> {
     yauzl.open(
       file,
       { lazyEntries: true, autoClose: false, validateEntrySizes: true, strictFileNames: true },
-      (err, zip) => (err || !zip ? reject(err ?? new Error("ZIP sa nedá otvoriť")) : resolve(zip)),
+      (err, zip) => (err || !zip ? reject(err ?? new Error("ZIP file could not be opened")) : resolve(zip)),
     );
   });
 }
@@ -147,7 +147,7 @@ function nextEntry(zip: yauzl.ZipFile): Promise<yauzl.Entry | null> {
 function openEntry(zip: yauzl.ZipFile, entry: yauzl.Entry): Promise<Readable> {
   return new Promise((resolve, reject) => {
     zip.openReadStream(entry, (err, stream) =>
-      err || !stream ? reject(err ?? new Error("Súbor v ZIP-e sa nedá čítať")) : resolve(stream),
+      err || !stream ? reject(err ?? new Error("File inside ZIP could not be read")) : resolve(stream),
     );
   });
 }
@@ -158,22 +158,22 @@ export async function extractBackup(zipPath: string, destDir: string): Promise<v
   const zip = await openZip(zipPath);
 
   try {
-    if (zip.entryCount > LIMITS.maxEntries) throw new Error("Záloha obsahuje priveľa súborov");
+    if (zip.entryCount > LIMITS.maxEntries) throw new Error("Backup contains too many files");
 
     let total = 0;
     const seen = new Set<string>();
     for (let entry = await nextEntry(zip); entry; entry = await nextEntry(zip)) {
       const name = entry.fileName;
-      if (!isSafeEntryName(name)) throw new Error(`Záloha obsahuje neplatnú cestu: ${name}`);
+      if (!isSafeEntryName(name)) throw new Error(`Backup contains an invalid path: ${name}`);
       if (name.endsWith("/")) continue;
-      if (seen.has(name)) throw new Error(`Záloha obsahuje duplicitný súbor: ${name}`);
+      if (seen.has(name)) throw new Error(`Backup contains a duplicate file: ${name}`);
       seen.add(name);
 
       total += entry.uncompressedSize;
-      if (total > LIMITS.maxTotalBytes) throw new Error("Záloha je podozrivo veľká");
+      if (total > LIMITS.maxTotalBytes) throw new Error("Backup is suspiciously large");
 
       const out = path.resolve(root, ...name.split("/"));
-      if (!out.startsWith(root + path.sep)) throw new Error(`Neplatná cesta: ${name}`);
+      if (!out.startsWith(root + path.sep)) throw new Error(`Invalid path: ${name}`);
 
       await fsp.mkdir(path.dirname(out), { recursive: true });
       await pipeline(await openEntry(zip, entry), fs.createWriteStream(out, { flags: "wx" }));
@@ -199,14 +199,14 @@ export async function prepareRestore(
   try {
     manifest = JSON.parse(await fsp.readFile(path.join(staging, MANIFEST), "utf8"));
   } catch {
-    throw new Error("Súbor nie je záloha HardwareForge (chýba manifest)");
+    throw new Error("This file is not a HardwareForge backup (missing manifest)");
   }
   if (manifest?.app !== "HardwareForge" || manifest.format !== BACKUP_FORMAT) {
-    throw new Error("Súbor nie je záloha HardwareForge alebo je z nepodporovanej verzie");
+    throw new Error("This file is not a HardwareForge backup, or is from an unsupported version");
   }
 
   const db = path.join(staging, DB_NAME);
-  if (!fs.existsSync(db)) throw new Error("V zálohe chýba databáza");
+  if (!fs.existsSync(db)) throw new Error("The backup is missing its database");
   verifyDb(db);
 
   await fsp.rm(path.join(staging, MANIFEST), { force: true });
@@ -215,12 +215,12 @@ export async function prepareRestore(
 
 /**
  * Vymeni data za obnovene. Stare data sa NEMAZU - presunu sa vedla
- * (data-pred-obnovou-<cas>), aby sa dali v pripade potreby vratit.
+ * (data-before-restore-<cas>), aby sa dali v pripade potreby vratit.
  * Server musi byt pred volanim zastaveny (Windows zamyka otvorenu DB).
  */
 export function swapInRestoredData(dataDir: string, staging: string): string {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const previous = `${dataDir}-pred-obnovou-${stamp}`;
+  const previous = `${dataDir}-before-restore-${stamp}`;
   if (fs.existsSync(dataDir)) fs.renameSync(dataDir, previous);
   fs.renameSync(staging, dataDir);
   return previous;

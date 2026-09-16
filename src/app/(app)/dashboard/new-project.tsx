@@ -20,31 +20,31 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
     <Modal
       open={open}
       onOpenChange={setOpen}
-      title="Nový projekt"
-      description="Základné údaje sa dajú kedykoľvek zmeniť v nastaveniach projektu."
+      title="New Project"
+      description="You can change the basic details anytime in the project's settings."
       trigger={
         <Button variant="primary">
           <Plus className="size-4" />
-          Nový projekt
+          New Project
         </Button>
       }
     >
       {/* createProject na konci presmeruje na detail projektu */}
       <form action={createProject} className="space-y-4">
-        <Field label="Názov">
-          <Input name="title" required autoFocus placeholder="Spotify displej s ESP32" />
+        <Field label="Name">
+          <Input name="title" required autoFocus placeholder="Spotify display with ESP32" />
         </Field>
 
-        <Field label="Popis">
+        <Field label="Description">
           <Textarea
             name="description"
             rows={3}
-            placeholder="Displej ukazujúci aktuálne prehrávanú skladbu…"
+            placeholder="A display showing the currently playing track…"
           />
         </Field>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Kategória">
+          <Field label="Category">
             <Input
               name="category"
               list="hf-categories"
@@ -58,11 +58,11 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
             </datalist>
           </Field>
 
-          <Field label="Termín (voliteľné)">
+          <Field label="Due date (optional)">
             <Input name="dueDate" type="date" />
           </Field>
 
-          <Field label="Stav">
+          <Field label="Status">
             <NativeSelect name="status" defaultValue="IDEA">
               {Object.entries(PROJECT_STATUS).map(([key, meta]) => (
                 <option key={key} value={key}>
@@ -72,7 +72,7 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
             </NativeSelect>
           </Field>
 
-          <Field label="Priorita">
+          <Field label="Priority">
             <NativeSelect name="priority" defaultValue="MEDIUM">
               {Object.entries(PRIORITY).map(([key, meta]) => (
                 <option key={key} value={key}>
@@ -83,7 +83,7 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
           </Field>
         </div>
 
-        <Field label="Farba">
+        <Field label="Color">
           <input type="hidden" name="color" value={color} />
           <div className="flex gap-2">
             {COLORS.map((c) => (
@@ -91,7 +91,7 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
                 key={c}
                 type="button"
                 onClick={() => setColor(c)}
-                aria-label={`Farba ${c}`}
+                aria-label={`Color ${c}`}
                 aria-pressed={color === c}
                 className="focus-ring size-7 rounded-full transition-transform hover:scale-110"
                 style={{
@@ -106,9 +106,9 @@ export function NewProjectButton({ categories }: { categories: string[] }) {
 
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-            Zrušiť
+            Cancel
           </Button>
-          <SubmitButton>Vytvoriť projekt</SubmitButton>
+          <SubmitButton>Create Project</SubmitButton>
         </div>
       </form>
     </Modal>

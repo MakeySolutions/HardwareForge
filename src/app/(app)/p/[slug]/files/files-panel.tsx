@@ -39,14 +39,14 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
 
     for (const file of items) {
       if (file.size > MAX_BYTES) {
-        toast.error(`„${file.name}“ je väčší ako 100 MB`);
+        toast.error(`"${file.name}" is larger than 100 MB`);
         continue;
       }
       try {
         await uploadToApp({ target: "project", projectId, name: file.name }, file);
       } catch (err) {
         toast.error(
-          `Nahranie „${file.name}“ zlyhalo`,
+          `Upload of "${file.name}" failed`,
           { description: err instanceof Error ? err.message : undefined },
         );
       }
@@ -78,9 +78,9 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
         )}
       >
         <FileUp className="size-7 text-[var(--text-muted)]" />
-        <p className="text-sm font-medium">Presuň sem súbory alebo ich vyber</p>
+        <p className="text-sm font-medium">Drag files here or choose them</p>
         <p className="text-xs text-[var(--text-muted)]">
-          PDF, STL, STEP, SVG, PNG, JPG, ZIP, Fusion 360 (.f3d) — do 100 MB
+          PDF, STL, STEP, SVG, PNG, JPG, ZIP, Fusion 360 (.f3d) — up to 100 MB
         </p>
         <input
           ref={inputRef}
@@ -96,7 +96,7 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
           onClick={() => inputRef.current?.click()}
           disabled={uploading.length > 0}
         >
-          {uploading.length > 0 ? `Nahrávam ${uploading.length}…` : "Vybrať súbory"}
+          {uploading.length > 0 ? `Uploading ${uploading.length}…` : "Choose Files"}
         </Button>
       </div>
 
@@ -104,7 +104,7 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
         <Card className="p-3">
           {uploading.map((n) => (
             <p key={n} className="text-xs text-[var(--text-muted)]">
-              Nahrávam {n}…
+              Uploading {n}…
             </p>
           ))}
         </Card>
@@ -113,8 +113,8 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
       {files.length === 0 ? (
         <EmptyState
           icon={<FolderOpen className="size-9" />}
-          title="Zatiaľ žiadne súbory"
-          description="Nahraj schémy, STL modely, datasheety alebo fotky hotového výrobku."
+          title="No files yet"
+          description="Upload schematics, STL models, datasheets, or photos of the finished build."
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -157,7 +157,7 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
                   {canPreview && (
                     <Button variant="ghost" size="sm" onClick={() => setPreview(f)}>
                       <Eye className="size-3.5" />
-                      Otvoriť
+                      Open
                     </Button>
                   )}
                   <a
@@ -166,7 +166,7 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
                     className="focus-ring inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                   >
                     <Download className="size-3.5" />
-                    Stiahnuť
+                    Download
                   </a>
                   <button
                     onClick={() =>
@@ -174,12 +174,12 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
                         try {
                           await deleteFile(f.id);
                         } catch {
-                          toast.error("Mazanie zlyhalo");
+                          toast.error("Delete failed");
                         }
                       })
                     }
                     className="focus-ring ml-auto rounded-lg p-1.5 text-[var(--text-muted)] hover:text-red-400"
-                    aria-label={`Zmazať ${f.name}`}
+                    aria-label={`Delete ${f.name}`}
                   >
                     <Trash2 className="size-3.5" />
                   </button>
@@ -191,8 +191,8 @@ export function FilesPanel({ projectId, files }: { projectId: string; files: Fil
       )}
 
       <p className="text-xs text-[var(--text-muted)]">
-        STEP a .f3d sa v appke nedajú vykresliť bez ťažkého konvertora — ulož si ich cez
-        „Stiahnuť“ a otvor v CAD programe. Všetky súbory zostávajú len na tvojom počítači.
+        STEP and .f3d can&apos;t be rendered in the app without a heavy converter — download them
+        with &quot;Download&quot; and open in your CAD program. All files stay only on your computer.
       </p>
 
       {preview && (

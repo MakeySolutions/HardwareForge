@@ -37,18 +37,18 @@ export function LinkPanel({
   return (
     <div className="animate-in fixed inset-y-0 right-0 z-50 flex w-80 flex-col border-l border-[var(--border)] bg-[var(--surface)] shadow-2xl shadow-black/40">
       <div className="flex h-12 items-center justify-between border-b border-[var(--border)] px-3">
-        <span className="text-sm font-semibold">Prepojiť na mapu</span>
-        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Zavrieť">
+        <span className="text-sm font-semibold">Link to Map</span>
+        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
           <X className="size-4" />
         </Button>
       </div>
 
       <div className="flex gap-1 border-b border-[var(--border)] p-2">
         <TabBtn active={tab === "task"} onClick={() => setTab("task")}>
-          <CheckSquare className="size-3.5" /> Úlohy
+          <CheckSquare className="size-3.5" /> Tasks
         </TabBtn>
         <TabBtn active={tab === "part"} onClick={() => setTab("part")}>
-          <Cpu className="size-3.5" /> Súčiastky
+          <Cpu className="size-3.5" /> Parts
         </TabBtn>
       </div>
 
@@ -58,7 +58,7 @@ export function LinkPanel({
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Hľadať…"
+            placeholder="Search…"
             className="h-8 pl-8 text-xs"
           />
         </div>
@@ -67,7 +67,7 @@ export function LinkPanel({
       <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
         {tab === "task" ? (
           tasks.length === 0 ? (
-            <Empty>Žiadne úlohy</Empty>
+            <Empty>No tasks</Empty>
           ) : (
             tasks.map((t) => (
               <button
@@ -87,7 +87,7 @@ export function LinkPanel({
             ))
           )
         ) : parts.length === 0 ? (
-          <Empty>Žiadne súčiastky</Empty>
+          <Empty>No parts</Empty>
         ) : (
           parts.map((p) => (
             <button
@@ -118,7 +118,7 @@ export function LinkPanel({
       </div>
 
       <p className="border-t border-[var(--border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
-        Klikni na položku — vloží sa do stredu mapy ako karta, ktorá sa farbí podľa stavu.
+        Click an item — it&apos;s inserted at the center of the map as a card that colors itself by status.
       </p>
     </div>
   );

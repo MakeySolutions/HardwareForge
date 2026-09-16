@@ -28,8 +28,8 @@ export function NotesPanel({ projectId, notes }: { projectId: string; notes: Not
     return (
       <EmptyState
         icon={<NotebookPen className="size-9" />}
-        title="Zatiaľ žiadne poznámky"
-        description="Zapisuj si zapojenie pinov, útržky kódu alebo checklist pred spájkovaním. Podporovaný je Markdown."
+        title="No notes yet"
+        description="Jot down pinouts, code snippets, or a checklist before soldering. Markdown is supported."
         action={
           <Button
             variant="primary"
@@ -41,7 +41,7 @@ export function NotesPanel({ projectId, notes }: { projectId: string; notes: Not
             }
           >
             <Plus className="size-4" />
-            Nová poznámka
+            New Note
           </Button>
         }
       />
@@ -63,7 +63,7 @@ export function NotesPanel({ projectId, notes }: { projectId: string; notes: Not
           }
         >
           <Plus className="size-4" />
-          Nová poznámka
+          New Note
         </Button>
 
         <div className="space-y-1">
@@ -115,7 +115,7 @@ function NoteEditor({ note }: { note: NoteRow }) {
         setStatus("saved");
       } catch {
         setStatus("idle");
-        toast.error("Poznámku sa nepodarilo uložiť");
+        toast.error("Failed to save note");
       }
     }, 800);
     return () => clearTimeout(t);
@@ -128,34 +128,34 @@ function NoteEditor({ note }: { note: NoteRow }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="border-transparent bg-transparent px-2 text-base font-semibold"
-          aria-label="Názov poznámky"
+          aria-label="Note title"
         />
         <span className="w-16 shrink-0 text-right text-[11px] text-[var(--text-muted)]">
-          {status === "saving" ? "Ukladám…" : status === "saved" ? "Uložené" : ""}
+          {status === "saving" ? "Saving…" : status === "saved" ? "Saved" : ""}
         </span>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setPreview((v) => !v)}
-          title={preview ? "Upraviť" : "Náhľad"}
+          title={preview ? "Edit" : "Preview"}
         >
           {preview ? <Pencil className="size-3.5" /> : <Eye className="size-3.5" />}
-          {preview ? "Upraviť" : "Náhľad"}
+          {preview ? "Edit" : "Preview"}
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => startTransition(() => void toggleNotePinned(note.id))}
-          aria-label={note.pinned ? "Odopnúť" : "Pripnúť"}
+          aria-label={note.pinned ? "Unpin" : "Pin"}
         >
           <Pin className={cn("size-3.5", note.pinned && "text-[var(--accent)]")} />
         </Button>
         <ConfirmButton
-          title="Zmazať poznámku?"
-          message={`Poznámka „${note.title}“ sa zmaže natrvalo.`}
+          title="Delete note?"
+          message={`The note "${note.title}" will be permanently deleted.`}
           onConfirm={() => deleteNote(note.id)}
         >
-          <Button variant="ghost" size="icon" aria-label="Zmazať poznámku">
+          <Button variant="ghost" size="icon" aria-label="Delete note">
             <Trash2 className="size-3.5" />
           </Button>
         </ConfirmButton>
@@ -166,16 +166,16 @@ function NoteEditor({ note }: { note: NoteRow }) {
           {content.trim() ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           ) : (
-            <p className="text-sm text-[var(--text-muted)]">Poznámka je prázdna.</p>
+            <p className="text-sm text-[var(--text-muted)]">This note is empty.</p>
           )}
         </div>
       ) : (
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={"# Zapojenie\n\n- [ ] GPIO 18 -> SCK\n- [ ] GPIO 23 -> MOSI\n\n```cpp\ntft.init();\n```"}
+          placeholder={"# Wiring\n\n- [ ] GPIO 18 -> SCK\n- [ ] GPIO 23 -> MOSI\n\n```cpp\ntft.init();\n```"}
           className="focus-ring flex-1 resize-none bg-transparent p-5 font-[family-name:var(--font-mono)] text-sm leading-relaxed outline-none"
-          aria-label="Obsah poznámky (Markdown)"
+          aria-label="Note content (Markdown)"
         />
       )}
     </Card>

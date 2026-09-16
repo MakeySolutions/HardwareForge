@@ -10,7 +10,7 @@ export function ProjectActions({ projectId, slug }: { projectId: string; slug: s
   return (
     <div className="no-print flex shrink-0 gap-2">
       {/* Tlacova verzia v tom istom okne - desktop appka nove okna neotvara */}
-      <Link href={`/print/${slug}`} className={buttonClass} title="Tlačová verzia projektu na uloženie do PDF">
+      <Link href={`/print/${slug}`} className={buttonClass} title="Printable version of the project to save as PDF">
         <Printer className="size-3.5" />
         PDF
       </Link>
@@ -19,7 +19,7 @@ export function ProjectActions({ projectId, slug }: { projectId: string; slug: s
           klientska navigacia by ho neotvorila. */}
       <a href={`/api/projects/${projectId}/shopping-list`} className={buttonClass}>
         <FileDown className="size-3.5" />
-        Nákupný zoznam
+        Shopping List
       </a>
     </div>
   );

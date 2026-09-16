@@ -26,7 +26,7 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label="Prepnúť tmavý/svetlý režim">
+    <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle dark/light mode">
       <Sun className="theme-icon-dark size-4" />
       <Moon className="theme-icon-light size-4" />
     </Button>

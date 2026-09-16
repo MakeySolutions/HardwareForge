@@ -39,7 +39,7 @@ const Excalidraw = dynamic(
     ssr: false,
     loading: () => (
       <div className="grid h-full place-items-center text-sm text-[var(--text-muted)]">
-        Načítavam editor…
+        Loading editor…
       </div>
     ),
   },
@@ -180,7 +180,7 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
           onChange={(e) => setTitle(e.target.value)}
           onBlur={commitTitle}
           onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-          aria-label="Názov mapy"
+          aria-label="Map title"
           className="focus-ring min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 text-sm font-medium"
         />
 
@@ -192,7 +192,7 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
           onClick={() => setLinkOpen((v) => !v)}
         >
           <Link2 className="size-3.5" />
-          <span className="hidden sm:inline">Prepojiť</span>
+          <span className="hidden sm:inline">Link</span>
         </Button>
 
         <input
@@ -206,12 +206,12 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
             e.target.value = ""; // umožní znova vybrať ten istý súbor
             if (files.length === 0) return;
             void engine.insertImages(files);
-            toast.success(files.length === 1 ? "Obrázok pridaný" : `${files.length} obrázkov pridaných`);
+            toast.success(files.length === 1 ? "Image added" : `${files.length} images added`);
           }}
         />
         <Button variant="secondary" size="sm" onClick={() => imageInputRef.current?.click()}>
           <ImagePlus className="size-3.5" />
-          <span className="hidden sm:inline">Obrázok</span>
+          <span className="hidden sm:inline">Image</span>
         </Button>
 
         <ExportMenu getScene={() => ({ ...engine.getScene(), name: title })}>
@@ -225,8 +225,8 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          aria-label={dark ? "Svetlá téma mapy" : "Tmavá téma mapy"}
-          title={dark ? "Svetlá téma mapy" : "Tmavá téma mapy"}
+          aria-label={dark ? "Light map theme" : "Dark map theme"}
+          title={dark ? "Light map theme" : "Dark map theme"}
         >
           {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
         </Button>
@@ -235,7 +235,7 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
           variant="ghost"
           size="icon"
           onClick={toggleFullscreen}
-          aria-label="Celá obrazovka"
+          aria-label="Full Screen"
         >
           {fullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
         </Button>
@@ -271,7 +271,7 @@ export function WhiteboardEditor({ slug, whiteboard, template, linkData }: Props
           onPick={(kind, id) => {
             void engine.addCard(kind, id);
             toast.success(
-              kind === "task" ? "Úloha pridaná na mapu" : "Súčiastka pridaná na mapu",
+              kind === "task" ? "Task added to map" : "Part added to map",
             );
           }}
         />
@@ -284,16 +284,16 @@ function SaveBadge({ state }: { state: SaveState }) {
   if (state === "saving")
     return (
       <span className="flex items-center gap-1 px-1 text-[11px] text-[var(--text-muted)]">
-        <Loader2 className="size-3 animate-spin" /> Ukladám…
+        <Loader2 className="size-3 animate-spin" /> Saving…
       </span>
     );
   if (state === "saved")
     return (
       <span className="flex items-center gap-1 px-1 text-[11px] text-[var(--text-muted)]">
-        <Check className="size-3" /> Uložené
+        <Check className="size-3" /> Saved
       </span>
     );
   if (state === "error")
-    return <span className="px-1 text-[11px] text-red-400">Chyba ukladania</span>;
-  return <span className="px-1 text-[11px] text-[var(--text-muted)]">Neuložené</span>;
+    return <span className="px-1 text-[11px] text-red-400">Save error</span>;
+  return <span className="px-1 text-[11px] text-[var(--text-muted)]">Unsaved</span>;
 }

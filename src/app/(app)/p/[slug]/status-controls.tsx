@@ -26,13 +26,13 @@ export function StatusControls({
         options={Object.entries(PROJECT_STATUS).map(([v, m]) => ({ value: v, label: m.label }))}
         className={PROJECT_STATUS[status].color}
         dot={PROJECT_STATUS[status].dot}
-        ariaLabel="Stav projektu"
+        ariaLabel="Project status"
         onChange={(v) =>
           startTransition(async () => {
             try {
               await setProjectStatus(projectId, v);
             } catch {
-              toast.error("Stav sa nepodarilo zmeniť");
+              toast.error("Failed to change status");
             }
           })
         }
@@ -41,13 +41,13 @@ export function StatusControls({
         value={priority}
         options={Object.entries(PRIORITY).map(([v, m]) => ({ value: v, label: m.label }))}
         className={PRIORITY[priority].color}
-        ariaLabel="Priorita projektu"
+        ariaLabel="Project priority"
         onChange={(v) =>
           startTransition(async () => {
             try {
               await setProjectPriority(projectId, v);
             } catch {
-              toast.error("Prioritu sa nepodarilo zmeniť");
+              toast.error("Failed to change priority");
             }
           })
         }

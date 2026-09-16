@@ -65,7 +65,7 @@ export function runMigrations(file = dbPath(), dir = migrationsDir()): Migration
 
     if ([...done].some((n) => !available.includes(n))) {
       throw new Error(
-        "Databáza pochádza z novšej verzie HardwareForge. Nainštaluj najnovšiu verziu appky.",
+        "This database comes from a newer version of HardwareForge. Please install the latest version of the app.",
       );
     }
 
@@ -83,7 +83,7 @@ export function runMigrations(file = dbPath(), dir = migrationsDir()): Migration
       try {
         db.exec(sql);
         const violations = db.prepare("PRAGMA foreign_key_check").all();
-        if (violations.length) throw new Error(`Migrácia ${name} porušila väzby medzi dátami`);
+        if (violations.length) throw new Error(`Migration ${name} violated data relationships`);
         db.prepare(`INSERT INTO "${TABLE}" ("name", "appliedAt") VALUES (?, ?)`).run(
           name,
           new Date().toISOString(),
@@ -112,11 +112,11 @@ export function runMigrations(file = dbPath(), dir = migrationsDir()): Migration
 function backupBeforeMigration(db: DatabaseSync) {
   const dir = backupsDir();
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  snapshotDatabase(db, path.join(dir, `pred-aktualizaciou-${stamp}.db`));
+  snapshotDatabase(db, path.join(dir, `before-update-${stamp}.db`));
 
   const old = fs
     .readdirSync(dir)
-    .filter((f) => f.startsWith("pred-aktualizaciou-") && f.endsWith(".db"))
+    .filter((f) => f.startsWith("before-update-") && f.endsWith(".db"))
     .sort();
   for (const f of old.slice(0, Math.max(0, old.length - KEEP_BACKUPS))) {
     fs.rmSync(path.join(dir, f), { force: true });

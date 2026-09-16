@@ -9,15 +9,15 @@ import { cn } from "@/lib/utils";
  * da sa zdielat odkazom a Next.js ho prefetchne pri hoveri.
  */
 const TABS = [
-  { href: "", label: "Prehľad" },
-  { href: "/board", label: "Doska" },
-  { href: "/maps", label: "Mapy" },
-  { href: "/parts", label: "Súčiastky" },
-  { href: "/files", label: "Súbory" },
-  { href: "/links", label: "Odkazy" },
-  { href: "/notes", label: "Poznámky" },
-  { href: "/timeline", label: "Časová os" },
-  { href: "/settings", label: "Nastavenia" },
+  { href: "", label: "Overview" },
+  { href: "/board", label: "Board" },
+  { href: "/maps", label: "Maps" },
+  { href: "/parts", label: "Parts" },
+  { href: "/files", label: "Files" },
+  { href: "/links", label: "Links" },
+  { href: "/notes", label: "Notes" },
+  { href: "/timeline", label: "Timeline" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export function ProjectTabs({ slug }: { slug: string }) {

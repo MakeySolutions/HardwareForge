@@ -19,19 +19,19 @@ export function DataMenu() {
   return (
     <div className="mt-auto space-y-0.5 border-t border-[var(--border)] pt-3">
       <p className="px-3 pb-1 text-[11px] font-medium tracking-wide text-[var(--text-muted)] uppercase">
-        Dáta
+        Data
       </p>
       <button className={item} onClick={() => void desktop()?.backup()}>
         <HardDriveDownload className="size-4" />
-        Zálohovať
+        Back Up
       </button>
       <button className={item} onClick={() => void desktop()?.restore()}>
         <ArchiveRestore className="size-4" />
-        Obnoviť zo zálohy
+        Restore from Backup
       </button>
       <button className={item} onClick={() => void desktop()?.openDataFolder()}>
         <FolderOpen className="size-4" />
-        Priečinok s dátami
+        Data Folder
       </button>
     </div>
   );

@@ -18,5 +18,5 @@ export async function isAuthorized(): Promise<boolean> {
 
 /** Zavolat na zaciatku kazdej Server Action a kazdej chranenej stranky. */
 export async function requireAuth(): Promise<void> {
-  if (!(await isAuthorized())) throw new Error("Prístup zamietnutý");
+  if (!(await isAuthorized())) throw new Error("Access denied");
 }

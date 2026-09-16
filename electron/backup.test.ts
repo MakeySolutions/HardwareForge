@@ -60,7 +60,7 @@ describe("createBackup + prepareRestore", () => {
       snapshotDb: (t) => fs.writeFileSync(t, "SQLITE-SNAPSHOT"),
     });
     // docasna kopia DB po sebe nic nenechala
-    expect(fs.readdirSync(data).filter((f) => f.startsWith(".zaloha-"))).toEqual([]);
+    expect(fs.readdirSync(data).filter((f) => f.startsWith(".backup-"))).toEqual([]);
 
     const staging = path.join(tmp, "staging");
     let verified = "";
@@ -78,7 +78,7 @@ describe("createBackup + prepareRestore", () => {
   it("odmietne ZIP, ktorý nie je záloha", async () => {
     const zipPath = path.join(tmp, "cudzi.zip");
     await writeZip(zipPath, { "hardwareforge.db": "x", "manifest.json": '{"app":"Iny"}' });
-    await expect(prepareRestore(zipPath, path.join(tmp, "s"), () => {})).rejects.toThrow(/nie je záloha/);
+    await expect(prepareRestore(zipPath, path.join(tmp, "s"), () => {})).rejects.toThrow(/not a HardwareForge backup/);
   });
 
   it("odmietne ZIP s cestou mimo priečinka a nič nezapíše mimo", async () => {
@@ -96,6 +96,6 @@ describe("createBackup + prepareRestore", () => {
   it("odmietne neočakávaný súbor v zálohe", async () => {
     const zipPath = path.join(tmp, "navyse.zip");
     await writeZip(zipPath, { "hardwareforge.db": "x", "virus.exe": "MZ" });
-    await expect(extractBackup(zipPath, path.join(tmp, "d"))).rejects.toThrow(/neplatnú cestu/);
+    await expect(extractBackup(zipPath, path.join(tmp, "d"))).rejects.toThrow(/invalid path/);
   });
 });

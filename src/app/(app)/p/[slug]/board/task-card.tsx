@@ -34,7 +34,7 @@ export function TaskCard({ task, overlay }: { task: BoardTask; overlay?: boolean
           {...attributes}
           {...listeners}
           className="focus-ring -ml-1 cursor-grab touch-none rounded p-0.5 text-[var(--text-muted)] opacity-0 transition-opacity group-hover/card:opacity-100 focus-visible:opacity-100 active:cursor-grabbing"
-          aria-label={`Presunúť úlohu ${task.title}`}
+          aria-label={`Move task ${task.title}`}
         >
           <GripVertical className="size-3.5" />
         </button>

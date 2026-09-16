@@ -6,11 +6,11 @@
 export type TemplateId = "blank" | "plan" | "wiring" | "enclosure" | "ideas";
 
 export const TEMPLATES: { id: TemplateId; label: string; hint: string }[] = [
-  { id: "blank", label: "Prázdna", hint: "Čistá tabuľa" },
-  { id: "plan", label: "Plán projektu", hint: "Stĺpce Treba spraviť / Doladiť / Hotové" },
-  { id: "wiring", label: "Schéma zapojenia", hint: "Napájanie · MCU · Periférie + legenda" },
-  { id: "enclosure", label: "Mechanika / krabička", hint: "Nákres · Rozmery · Fotky z tlače" },
-  { id: "ideas", label: "Nápady", hint: "Farebné lepíky na brainstorming" },
+  { id: "blank", label: "Blank", hint: "A clean canvas" },
+  { id: "plan", label: "Project Plan", hint: "To Do / Refine / Done columns" },
+  { id: "wiring", label: "Wiring Diagram", hint: "Power · MCU · Peripherals + legend" },
+  { id: "enclosure", label: "Mechanical / Enclosure", hint: "Sketch · Dimensions · Print photos" },
+  { id: "ideas", label: "Ideas", hint: "Colored sticky notes for brainstorming" },
 ];
 
 const FONT = 2; // FONT_FAMILY.Nunito
@@ -51,38 +51,38 @@ export function templateElements(id: TemplateId): unknown[] {
   switch (id) {
     case "plan":
       return [
-        heading(40, 20, "Plán projektu"),
-        frame(40, 80, 320, 640, "Treba spraviť"),
-        frame(400, 80, 320, 640, "Doladiť"),
-        frame(760, 80, 320, 640, "Hotové"),
+        heading(40, 20, "Project Plan"),
+        frame(40, 80, 320, 640, "To Do"),
+        frame(400, 80, 320, 640, "Refine"),
+        frame(760, 80, 320, 640, "Done"),
       ];
 
     case "wiring":
       return [
-        heading(40, 20, "Schéma zapojenia"),
-        frame(40, 80, 300, 300, "Napájanie"),
+        heading(40, 20, "Wiring Diagram"),
+        frame(40, 80, 300, 300, "Power"),
         frame(380, 80, 340, 420, "MCU"),
-        frame(760, 80, 360, 560, "Periférie"),
-        heading(40, 420, "Legenda vodičov", "#8b91a3"),
-        { type: "text" as const, x: 40, y: 460, text: "🔴 +V   ⚫ GND   🟡 dáta   🔵 hodiny", fontSize: 16, fontFamily: FONT, strokeColor: "#8b91a3" },
+        frame(760, 80, 360, 560, "Peripherals"),
+        heading(40, 420, "Wire Legend", "#8b91a3"),
+        { type: "text" as const, x: 40, y: 460, text: "🔴 +V   ⚫ GND   🟡 data   🔵 clock", fontSize: 16, fontFamily: FONT, strokeColor: "#8b91a3" },
       ];
 
     case "enclosure":
       return [
-        heading(40, 20, "Mechanika / krabička"),
-        frame(40, 80, 520, 520, "Nákres"),
-        frame(600, 80, 300, 240, "Rozmery"),
-        frame(600, 360, 300, 240, "Fotky z tlače"),
+        heading(40, 20, "Mechanical / Enclosure"),
+        frame(40, 80, 520, 520, "Sketch"),
+        frame(600, 80, 300, 240, "Dimensions"),
+        frame(600, 360, 300, 240, "Print Photos"),
       ];
 
     case "ideas":
       return [
-        heading(40, 20, "Nápady"),
-        note(40, 90, "Nápad 1", "#fde68a"),
-        note(280, 90, "Nápad 2", "#bbf7d0"),
-        note(520, 90, "Nápad 3", "#bfdbfe"),
-        note(160, 250, "Inšpirácia", "#fbcfe8"),
-        note(400, 250, "Otázka?", "#fed7aa"),
+        heading(40, 20, "Ideas"),
+        note(40, 90, "Idea 1", "#fde68a"),
+        note(280, 90, "Idea 2", "#bbf7d0"),
+        note(520, 90, "Idea 3", "#bfdbfe"),
+        note(160, 250, "Inspiration", "#fbcfe8"),
+        note(400, 250, "Question?", "#fed7aa"),
       ];
 
     case "blank":

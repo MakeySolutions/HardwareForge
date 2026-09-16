@@ -49,7 +49,7 @@ export function Modal({
               )}
             </div>
             <Dialog.Close asChild>
-              <Button variant="ghost" size="icon" aria-label="Zavrieť">
+              <Button variant="ghost" size="icon" aria-label="Close">
                 <X className="size-4" />
               </Button>
             </Dialog.Close>
@@ -68,7 +68,7 @@ export function ConfirmButton({
   onConfirm,
   title,
   message,
-  confirmLabel = "Zmazať",
+  confirmLabel = "Delete",
   children,
 }: {
   onConfirm: () => void | Promise<void>;
@@ -86,7 +86,7 @@ export function ConfirmButton({
       <Modal open={open} onOpenChange={setOpen} title={title} description={message}>
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={() => setOpen(false)}>
-            Zrušiť
+            Cancel
           </Button>
           <Button
             variant="danger"
@@ -101,7 +101,7 @@ export function ConfirmButton({
               }
             }}
           >
-            {pending ? "Mažem…" : confirmLabel}
+            {pending ? "Deleting…" : confirmLabel}
           </Button>
         </div>
       </Modal>

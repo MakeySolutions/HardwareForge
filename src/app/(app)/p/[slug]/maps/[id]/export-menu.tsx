@@ -27,7 +27,7 @@ export function ExportMenu({
     try {
       const scene = getScene();
       if (!scene.elements.length) {
-        toast.error("Mapa je prázdna");
+        toast.error("Map is empty");
         return;
       }
       const mod = await import("@/lib/whiteboard/export");
@@ -36,7 +36,7 @@ export function ExportMenu({
       else await mod.exportPdf(scene);
     } catch (err) {
       console.error(err);
-      toast.error("Export zlyhal");
+      toast.error("Export failed");
     } finally {
       setBusy(false);
     }
@@ -52,13 +52,13 @@ export function ExportMenu({
           className="card z-50 min-w-40 p-1 shadow-2xl shadow-black/40"
         >
           <Item onSelect={() => doExport("png")} icon={<FileImage className="size-3.5" />}>
-            PNG obrázok
+            PNG image
           </Item>
           <Item onSelect={() => doExport("svg")} icon={<FileCode className="size-3.5" />}>
-            SVG (vektor)
+            SVG (vector)
           </Item>
           <Item onSelect={() => doExport("pdf")} icon={<Printer className="size-3.5" />}>
-            PDF (cez tlač)
+            PDF (via print)
           </Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

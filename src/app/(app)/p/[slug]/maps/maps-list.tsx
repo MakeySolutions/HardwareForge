@@ -37,26 +37,26 @@ export function MapsList({
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold">Mapy</h2>
+          <h2 className="text-sm font-semibold">Maps</h2>
           <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-            Vizuálny náčrt projektu — plán, schéma zapojenia, krabička, nápady.
+            Visual sketches of the project — plan, wiring diagram, enclosure, ideas.
           </p>
         </div>
         <Button variant="primary" size="sm" onClick={() => setCreating(true)}>
           <Plus className="size-4" />
-          Nová mapa
+          New Map
         </Button>
       </div>
 
       {boards.length === 0 ? (
         <EmptyState
           icon={<MapIcon className="size-9" />}
-          title="Zatiaľ žiadne mapy"
-          description="Nakresli si, čo treba spraviť, ako je to zapojené alebo ako má vyzerať krabička. Môžeš vkladať obrázky a prepájať úlohy."
+          title="No maps yet"
+          description="Sketch what needs to be done, how it's wired, or what the enclosure should look like. You can insert images and link tasks."
           action={
             <Button variant="primary" onClick={() => setCreating(true)}>
               <Plus className="size-4" />
-              Nová mapa
+              New Map
             </Button>
           }
         />
@@ -93,26 +93,26 @@ export function MapsList({
                     {b.title}
                   </Link>
                   <p className="mt-0.5 text-[11px] text-[var(--text-muted)]">
-                    upravené {timeAgo(b.updatedAt)}
-                    {b.fileCount > 0 && ` · ${b.fileCount} obrázkov`}
+                    updated {timeAgo(b.updatedAt)}
+                    {b.fileCount > 0 && ` · ${b.fileCount} images`}
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-0.5 opacity-0 transition-opacity group-hover/map:opacity-100 focus-within:opacity-100">
                   <button
                     onClick={() => setRenaming(b)}
                     className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-[var(--text)]"
-                    aria-label={`Premenovať ${b.title}`}
+                    aria-label={`Rename ${b.title}`}
                   >
                     <Pencil className="size-3.5" />
                   </button>
                   <ConfirmButton
-                    title="Zmazať mapu?"
-                    message={`Mapa „${b.title}“ a jej obrázky sa zmažú natrvalo.`}
+                    title="Delete map?"
+                    message={`The map "${b.title}" and its images will be permanently deleted.`}
                     onConfirm={() => deleteWhiteboard(b.id)}
                   >
                     <button
                       className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-red-400"
-                      aria-label={`Zmazať ${b.title}`}
+                      aria-label={`Delete ${b.title}`}
                     >
                       <Trash2 className="size-3.5" />
                     </button>
@@ -125,7 +125,7 @@ export function MapsList({
       )}
 
       {/* Nová mapa */}
-      <Modal open={creating} onOpenChange={setCreating} title="Nová mapa">
+      <Modal open={creating} onOpenChange={setCreating} title="New Map">
         <form
           action={async (fd) => {
             fd.set("template", template);
@@ -135,17 +135,17 @@ export function MapsList({
             } catch (err) {
               // redirect() hodí NEXT_REDIRECT - to nechceme hlásiť ako chybu
               if ((err as Error).message?.includes("NEXT_REDIRECT")) throw err;
-              toast.error("Mapu sa nepodarilo vytvoriť");
+              toast.error("Failed to create map");
             }
           }}
           className="space-y-4"
         >
-          <Field label="Názov">
-            <Input name="title" defaultValue="Nová mapa" autoFocus />
+          <Field label="Name">
+            <Input name="title" defaultValue="New Map" autoFocus />
           </Field>
 
           <div>
-            <p className="mb-1.5 text-xs font-medium text-[var(--text-muted)]">Predloha</p>
+            <p className="mb-1.5 text-xs font-medium text-[var(--text-muted)]">Template</p>
             <div className="grid gap-2 sm:grid-cols-2">
               {TEMPLATES.map((t) => (
                 <button
@@ -168,16 +168,16 @@ export function MapsList({
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={() => setCreating(false)}>
-              Zrušiť
+              Cancel
             </Button>
-            <SubmitButton>Vytvoriť</SubmitButton>
+            <SubmitButton>Create</SubmitButton>
           </div>
         </form>
       </Modal>
 
       {/* Premenovanie */}
       {renaming && (
-        <Modal open onOpenChange={(v) => !v && setRenaming(null)} title="Premenovať mapu">
+        <Modal open onOpenChange={(v) => !v && setRenaming(null)} title="Rename Map">
           <form
             action={(fd) => {
               const title = fd.get("title")?.toString() ?? "";
@@ -186,20 +186,20 @@ export function MapsList({
                   await renameWhiteboard(renaming.id, title);
                   setRenaming(null);
                 } catch {
-                  toast.error("Premenovanie zlyhalo");
+                  toast.error("Rename failed");
                 }
               });
             }}
             className="space-y-4"
           >
-            <Field label="Názov">
+            <Field label="Name">
               <Input name="title" defaultValue={renaming.title} autoFocus required />
             </Field>
             <div className="flex justify-end gap-2">
               <Button type="button" variant="secondary" onClick={() => setRenaming(null)}>
-                Zrušiť
+                Cancel
               </Button>
-              <SubmitButton>Uložiť</SubmitButton>
+              <SubmitButton>Save</SubmitButton>
             </div>
           </form>
         </Modal>

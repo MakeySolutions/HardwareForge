@@ -49,7 +49,7 @@ export async function uploadNewFiles(
       );
       known.add(f.id);
     } catch (err) {
-      console.error("Obrázok sa nepodarilo uložiť:", err);
+      console.error("Failed to save image:", err);
     }
   }
 
@@ -78,7 +78,7 @@ export async function loadStoredFiles(stored: StoredFile[]): Promise<ExcalidrawF
         };
         return file;
       } catch (err) {
-        console.error("Obrázok mapy sa nepodarilo načítať:", err);
+        console.error("Failed to load map image:", err);
         return null;
       }
     }),

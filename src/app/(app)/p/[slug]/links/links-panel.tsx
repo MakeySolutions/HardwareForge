@@ -40,22 +40,22 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Odkazy</h2>
+        <h2 className="text-sm font-semibold">Links</h2>
         <Button variant="primary" size="sm" onClick={() => setOpen(true)}>
           <Plus className="size-4" />
-          Pridať odkaz
+          Add Link
         </Button>
       </div>
 
       {links.length === 0 ? (
         <EmptyState
           icon={<Link2 className="size-9" />}
-          title="Zatiaľ žiadne odkazy"
-          description="Ulož si GitHub repo, YouTube návod, datasheet alebo produkt na AliExprese."
+          title="No links yet"
+          description="Save a GitHub repo, a YouTube tutorial, a datasheet, or an AliExpress product."
           action={
             <Button variant="primary" onClick={() => setOpen(true)}>
               <Plus className="size-4" />
-              Pridať odkaz
+              Add Link
             </Button>
           }
         />
@@ -94,7 +94,7 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
                       target="_blank"
                       rel="noopener noreferrer"
                       className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-[var(--text)]"
-                      aria-label={`Otvoriť ${l.title}`}
+                      aria-label={`Open ${l.title}`}
                     >
                       <ExternalLink className="size-3.5" />
                     </a>
@@ -104,12 +104,12 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
                           try {
                             await deleteLink(l.id);
                           } catch {
-                            toast.error("Mazanie zlyhalo");
+                            toast.error("Delete failed");
                           }
                         })
                       }
                       className="focus-ring rounded p-1.5 text-[var(--text-muted)] hover:text-red-400"
-                      aria-label={`Zmazať ${l.title}`}
+                      aria-label={`Delete ${l.title}`}
                     >
                       <Trash2 className="size-3.5" />
                     </button>
@@ -121,14 +121,14 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
         ))
       )}
 
-      <Modal open={open} onOpenChange={setOpen} title="Nový odkaz">
+      <Modal open={open} onOpenChange={setOpen} title="New Link">
         <form
           action={async (fd) => {
             try {
               await createLink(projectId, fd);
               setOpen(false);
             } catch {
-              toast.error("Zadaj platnú URL vrátane https://");
+              toast.error("Enter a valid URL including https://");
             }
           }}
           className="space-y-4"
@@ -136,12 +136,12 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
           <Field label="URL">
             <Input name="url" type="url" required autoFocus placeholder="https://github.com/…" />
           </Field>
-          <Field label="Názov" hint="Ak necháš prázdne, použije sa doména">
-            <Input name="title" placeholder="Knižnica TFT_eSPI" />
+          <Field label="Name" hint="If left empty, the domain is used">
+            <Input name="title" placeholder="TFT_eSPI library" />
           </Field>
-          <Field label="Typ" hint="Prázdne = uhádne sa z domény">
+          <Field label="Type" hint="Empty = guessed from the domain">
             <NativeSelect name="type" defaultValue="">
-              <option value="">Uhádnuť automaticky</option>
+              <option value="">Guess automatically</option>
               {Object.entries(LINK_TYPE).map(([v, label]) => (
                 <option key={v} value={v}>
                   {label}
@@ -149,14 +149,14 @@ export function LinksPanel({ projectId, links }: { projectId: string; links: Lin
               ))}
             </NativeSelect>
           </Field>
-          <Field label="Poznámka">
+          <Field label="Note">
             <Textarea name="notes" rows={2} />
           </Field>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-              Zrušiť
+              Cancel
             </Button>
-            <SubmitButton>Pridať</SubmitButton>
+            <SubmitButton>Add</SubmitButton>
           </div>
         </form>
       </Modal>

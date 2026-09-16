@@ -52,9 +52,9 @@ export function FilterBar({ categories }: { categories: string[] }) {
         <Input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Hľadať projekty…"
+          placeholder="Search projects…"
           className="border-transparent bg-transparent pl-9"
-          aria-label="Hľadať projekty"
+          aria-label="Search projects"
         />
       </div>
 
@@ -62,9 +62,9 @@ export function FilterBar({ categories }: { categories: string[] }) {
         value={params.get("category") ?? ""}
         onChange={(e) => setParam("category", e.target.value)}
         className="w-auto min-w-36"
-        aria-label="Kategória"
+        aria-label="Category"
       >
-        <option value="">Všetky kategórie</option>
+        <option value="">All categories</option>
         {categories.map((c) => (
           <option key={c} value={c}>
             {c}
@@ -76,9 +76,9 @@ export function FilterBar({ categories }: { categories: string[] }) {
         value={params.get("status") ?? ""}
         onChange={(e) => setParam("status", e.target.value)}
         className="w-auto min-w-32"
-        aria-label="Stav"
+        aria-label="Status"
       >
-        <option value="">Všetky stavy</option>
+        <option value="">All statuses</option>
         {Object.entries(PROJECT_STATUS).map(([key, meta]) => (
           <option key={key} value={key}>
             {meta.label}
@@ -90,11 +90,11 @@ export function FilterBar({ categories }: { categories: string[] }) {
         value={params.get("sort") ?? "updated"}
         onChange={(e) => setParam("sort", e.target.value === "updated" ? "" : e.target.value)}
         className="w-auto min-w-36"
-        aria-label="Zoradenie"
+        aria-label="Sort"
       >
-        <option value="updated">Naposledy upravené</option>
-        <option value="created">Najnovšie</option>
-        <option value="title">Podľa názvu</option>
+        <option value="updated">Recently updated</option>
+        <option value="created">Newest</option>
+        <option value="title">By name</option>
       </NativeSelect>
 
       {hasFilters && (
@@ -109,11 +109,11 @@ export function FilterBar({ categories }: { categories: string[] }) {
           }}
         >
           <X className="size-3.5" />
-          Zrušiť
+          Clear
         </Button>
       )}
 
-      {pending && <span className="px-1 text-xs text-[var(--text-muted)]">Hľadám…</span>}
+      {pending && <span className="px-1 text-xs text-[var(--text-muted)]">Searching…</span>}
     </div>
   );
 }

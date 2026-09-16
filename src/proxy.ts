@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
   });
 
   if (!verdict.ok) {
-    return new NextResponse("Prístup zamietnutý", {
+    return new NextResponse("Access denied", {
       status: 403,
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });

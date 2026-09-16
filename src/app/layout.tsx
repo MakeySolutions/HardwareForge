@@ -7,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "HardwareForge",
-  description: "Plánovanie technických projektov — ESP32, Arduino, 3D tlač, elektronika",
+  description: "Hardware project planning — ESP32, Arduino, 3D printing, electronics",
 };
 
 /**
@@ -55,7 +55,7 @@ try {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sk" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
