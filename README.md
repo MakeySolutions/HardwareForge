@@ -6,6 +6,24 @@ A planner for hardware projects — ESP32, Arduino, 3D printing, electronics.
 photos, drawings — stays on your own computer. The app never connects to the
 internet, not even to check for updates.
 
+## Screenshots
+
+**Your projects at a glance**
+
+![Projects dashboard](docs/screenshots/projects.png)
+
+**Project overview — progress, cost, and recent activity**
+
+![Project overview](docs/screenshots/overview.png)
+
+**Parts list with prices and shopping totals**
+
+![Parts table](docs/screenshots/parts.png)
+
+**Maps — free-form canvas linked to your tasks and parts**
+
+![Map editor](docs/screenshots/maps.png)
+
 ## Download
 
 1. Go to the **[Releases page](../../releases/latest)**.
